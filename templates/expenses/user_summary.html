@@ -4,83 +4,163 @@
 
 <div class="container mt-3">
 
+    <!-- ROW 1: Total Budget Overview -->
     <div class="row mb-3">
         <div class="col-12">
-            <div class="card shadow" style="background-color: #9381ff;">
-                <div class="card-body text-center">
-
+            <div class="card card-budget card-budget-primary shadow">
+                <div class="card-header text-center">
+                    <strong>Total Budget</strong>
+                </div>
+                <div class="card-body">
                     <div class="row text-center">
-
-                        <div class="col-6 border-end border-black">
-                            <p class="card-text text-muted mb-1">Left</p>
-                            <h3 class="card-title">฿{{ total_left }}</h3>
+                        <div class="col-6 divider-vertical">
+                            <p class="text-label">Remaining</p>
+                            <h3 class="text-value">{{ total_budget_left|floatformat:0 }}</h3>
                         </div>
                         <div class="col-6">
-                            <p class="card-text text-muted mb-1">Had</p>
-                            <h3 class="card-title">฿{{ total_budget }}</h3>
+                            <p class="text-label">Budget</p>
+                            <h3 class="text-value">{{ total_budget|floatformat:0 }}</h3>
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- ROW 2: Individual User Stats (Budget + Spending Combined) -->
     <div class="row mb-3">
+        <!-- User 1 Column -->
         <div class="col-6">
-            <div class="card shadow" style="background-color: #9381ff;">
-
-                <div class="card-header text-black" style="background-color: #3D167A70">
-                    <strong>{{ user1_name }}</strong>
+            <div class="card card-user-wrapper shadow-sm">
+                <div class="card-header text-center bg-transparent border-0 pt-3">
+                    <h5 class="mb-0 fw-bold">{{ user1_name }}</h5>
                 </div>
+                <div class="card-body p-2">
+                    <!-- User 1 Budget Card -->
+                    <div class="card card-budget shadow-sm mb-2">
+                        <div class="card-header text-center py-2">
+                            <small class="fw-semibold">Budget</small>
+                        </div>
+                        <div class="card-body text-center py-3">
+                            <h4 class="text-value mb-1">{{ user1_stats.left|floatformat:0 }}</h4>
+                            <small class="text-muted">of {{ user1_stats.budget|floatformat:0 }}</small>
+                        </div>
+                    </div>
 
-                <div class="card-body text-center">
-                    <h3 class="card-title">{{ user1_stats.left }}</h3>
-                    <p class="card-text text-muted mb-1">{{ user1_stats.budget }}</p>
+                    <!-- User 1 Spending Card -->
+                    <div class="card card-spending shadow-sm">
+                        <div class="card-header text-center py-2">
+                            <small class="fw-semibold">Personal Spending</small>
+                        </div>
+                        <div class="card-body text-center py-3">
+                            <h4 class="text-value mb-0">{{ user1_stats.for_self|floatformat:0 }}</h4>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
+        <!-- User 2 Column -->
         <div class="col-6">
-            <div class="card shadow" style="background-color: #9381ff;">
-
-                <div class="card-header text-black" style="background-color: #3D167A70">
-                    <strong>{{ user2_name }}</strong>
+            <div class="card card-user-wrapper shadow-sm">
+                <div class="card-header text-center bg-transparent border-0 pt-3">
+                    <h5 class="mb-0 fw-bold">{{ user2_name }}</h5>
                 </div>
+                <div class="card-body p-2">
+                    <!-- User 2 Budget Card -->
+                    <div class="card card-budget shadow-sm mb-2">
+                        <div class="card-header text-center py-2">
+                            <small class="fw-semibold">Budget</small>
+                        </div>
+                        <div class="card-body text-center py-3">
+                            <h4 class="text-value mb-1">{{ user2_stats.left|floatformat:0 }}</h4>
+                            <small class="text-muted">of {{ user2_stats.budget|floatformat:0 }}</small>
+                        </div>
+                    </div>
 
-                <div class="card-body text-center">
-                    <h3 class="card-title">{{ user2_stats.left }}</h3>
-                    <p class="card-text text-muted mb-1">{{ user2_stats.budget }}</p>
+                    <!-- User 2 Spending Card -->
+                    <div class="card card-spending shadow-sm">
+                        <div class="card-header text-center py-2">
+                            <small class="fw-semibold">Personal Spending</small>
+                        </div>
+                        <div class="card-body text-center py-3">
+                            <h4 class="text-value mb-0">{{ user2_stats.for_self|floatformat:0 }}</h4>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- ROW 3: Deposit Pool Overview -->
     <div class="row mb-3">
-        <div class="col-6">
-            <div class="card shadow" style="background-color: #9381ff;">
-
-                <div class="card-header text-black" style="background-color: #3D167A70">
-                    <strong>Spent</strong>
+        <div class="col-12">
+            <div class="card card-deposit card-deposit-primary shadow">
+                <div class="card-header text-center">
+                    <strong>Shared Deposit Pool</strong>
                 </div>
-
-                <div class="card-body text-center">
-                    <h3 class="card-title">{{ user1_stats.for_self }}</h3>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6 divider-vertical">
+                            <p class="text-label">Remaining</p>
+                            <h3 class="text-value">{{ remaining_deposit|floatformat:0 }}</h3>
+                        </div>
+                        <div class="col-6">
+                            <p class="text-label">Total Deposit</p>
+                            <h3 class="text-value">{{ total_deposit|floatformat:0 }}</h3>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="col-6">
-            <div class="card shadow" style="background-color: #9381ff;">
-
-                <div class="card-header text-black" style="background-color: #3D167A70">
-                    <strong>Spent</strong>
+    <!-- ROW 4: Deposit Breakdown Table -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card card-deposit shadow">
+                <div class="card-header text-center">
+                    <strong>Shared Expenses Breakdown</strong>
                 </div>
-
-                <div class="card-body text-center">
-                    <h3 class="card-title">{{ user2_stats.for_self }}</h3>
+                <div class="card-body p-0">
+                    <table class="table table-deposit">
+                        <tbody>
+                            <tr>
+                                <td>Food</td>
+                                <td class="text-end fw-semibold">{{ shared_food|floatformat:0 }}</td>
+                            </tr>
+                            <tr>
+                                <td>Grocery</td>
+                                <td class="text-end fw-semibold">{{ shared_grocery|floatformat:0 }}</td>
+                            </tr>
+                            <tr>
+                                <td>Utility</td>
+                                <td class="text-end fw-semibold">{{ shared_utility|floatformat:0 }}</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td class="fw-bold">Total Spent</td>
+                                <td class="text-end fw-bold">{{ shared_total|floatformat:0 }}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons (Placeholder for Income/Deposit forms) -->
+    <div class="row mb-5">
+        <div class="col-6">
+            <a href="{% url 'add_income' %}" class="btn btn-primary w-100">
+                + Add Income
+            </a>
+        </div>
+        <div class="col-6">
+            <a href="#" class="btn btn-primary w-100">
+                + Add Deposit
+            </a>
         </div>
     </div>
 

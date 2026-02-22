@@ -8,25 +8,164 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        /* ===== COLOR SYSTEM - CHANGE THESE THREE COLORS ===== */
+        :root {
+            /* Budget Section - Purple theme */
+            --budget-primary: #9381ff;
+            --budget-light: #b8b8ff;
+            --budget-header: #3D167A70;
+
+            /* Spending Section - Green theme */
+            --spending-primary: #7cb342;
+            --spending-light: #d5f7b9;
+            --spending-header: #558b2f80;
+
+            /* Deposit Section - Blue theme */
+            --deposit-primary: #42a5f5;
+            --deposit-light: #b9d1f7;
+            --deposit-header: #1976d280;
+
+            /* Neutral colors */
+            --bg-page: #f8f7ff;
+            --text-dark: #2c3e50;
+            --border-color: #00000020;
+        }
+
+        /* ===== BASE STYLES ===== */
         body {
-        background-color: #f8f7ff;
+            background-color: var(--bg-page);
+            color: var(--text-dark);
         }
 
-        .color-1 {
-        background-color: #9381ff;
+        /* ===== CARD SYSTEM ===== */
+
+        /* User Wrapper Card (background for user columns) */
+        .card-user-wrapper {
+            background-color: rgba(147, 129, 255, 0.08);
+            border: 1px solid rgba(147, 129, 255, 0.2);
         }
 
-
-        .color-2 {
-        background-color: #f8f7ff;
+        .card-user-wrapper .card-header {
+            color: var(--budget-primary);
         }
 
-        .card {
-            background-color: #b8b8ff;
+        /* Budget Cards */
+        .card-budget {
+            background-color: var(--budget-light);
+            border: none;
         }
-        .card-header, .btn {
-        background-color: #9381ff;
-        color: white;
+
+        .card-budget .card-header {
+            background-color: var(--budget-header);
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .card-budget-primary {
+            background-color: var(--budget-primary);
+        }
+
+        /* Spending Cards */
+        .card-spending {
+            background-color: var(--spending-light);
+            border: none;
+        }
+
+        .card-spending .card-header {
+            background-color: var(--spending-header);
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        /* Deposit Cards */
+        .card-deposit {
+            background-color: var(--deposit-light);
+            border: none;
+        }
+
+        .card-deposit .card-header {
+            background-color: var(--deposit-header);
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .card-deposit-primary {
+            background-color: var(--deposit-primary);
+        }
+
+        /* ===== TABLE STYLES ===== */
+        .table-deposit {
+            background-color: transparent !important;
+            margin-bottom: 0;
+        }
+
+        .table-deposit tbody tr {
+            background-color: var(--deposit-light) !important;
+        }
+
+        .table-deposit tbody tr:nth-child(even) {
+            background-color: rgba(66, 165, 245, 0.3) !important;
+        }
+
+        .table-deposit tbody tr td {
+            background-color: transparent !important;
+            padding: 0.75rem 1rem;
+            border: none !important;
+        }
+
+        .table-deposit tfoot tr {
+            background-color: var(--deposit-header) !important;
+            border-top: 2px solid var(--deposit-primary) !important;
+        }
+
+        .table-deposit tfoot tr td {
+            background-color: transparent !important;
+            border: none !important;
+        }
+
+        /* ===== BUTTON STYLES ===== */
+        .btn-primary {
+            background-color: var(--budget-primary);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--budget-primary);
+            opacity: 0.9;
+        }
+
+        /* ===== FOOTER NAV ===== */
+        footer .nav-link {
+            padding: 1rem;
+            color: var(--text-dark);
+            transition: all 0.2s;
+        }
+
+        footer .nav-link:hover {
+            background-color: var(--budget-light);
+            color: var(--budget-primary);
+        }
+
+        footer .nav-link.active {
+            background-color: var(--budget-primary);
+            color: white;
+        }
+
+        /* ===== UTILITIES ===== */
+        .text-value {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .text-label {
+            font-size: 0.875rem;
+            opacity: 0.8;
+            margin-bottom: 0.25rem;
+        }
+
+        .divider-vertical {
+            border-right: 2px solid var(--border-color);
         }
     </style>
 </head>
@@ -40,19 +179,19 @@
     </main>
 
     <footer class="navbar fixed-bottom border-top bg-light">
-            <div class="container-fluid">
-                <div class="row text-center w-100 m-0">
-                    <div class="col">
-                        <a class="nav-link" href="{% url 'records' %}">Records</a>
-                    </div>
-                    <div class="col">
-                        <a class="nav-link" href="{% url 'add_expense' %}">Add</a>
-                    </div>
-                    <div class="col">
-                        <a class="nav-link" href="{% url 'summary' %}">User</a>
-                    </div>
+        <div class="container-fluid">
+            <div class="row text-center w-100 m-0">
+                <div class="col">
+                    <a class="nav-link" href="{% url 'records' %}">Records</a>
+                </div>
+                <div class="col">
+                    <a class="nav-link" href="{% url 'add_expense' %}">Add</a>
+                </div>
+                <div class="col">
+                    <a class="nav-link" href="{% url 'summary' %}">User</a>
                 </div>
             </div>
+        </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
