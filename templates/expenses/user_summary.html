@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-3">
+
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card shadow" style="background-color: #9381ff;">
+                <div class="card-body text-center">
+
+                    <div class="row text-center">
+
+                        <div class="col-6 border-end border-black">
+                            <p class="card-text text-muted mb-1">Left</p>
+                            <h3 class="card-title">฿{{ total_left }}</h3>
+                        </div>
+                        <div class="col-6">
+                            <p class="card-text text-muted mb-1">Had</p>
+                            <h3 class="card-title">฿{{ total_budget }}</h3>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-6">
+            <div class="card shadow" style="background-color: #9381ff;">
+
+                <div class="card-header text-black" style="background-color: #3D167A70">
+                    <strong>{{ user1_name }}</strong>
+                </div>
+
+                <div class="card-body text-center">
+                    <h3 class="card-title">{{ user1_stats.left }}</h3>
+                    <p class="card-text text-muted mb-1">{{ user1_stats.budget }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="card shadow" style="background-color: #9381ff;">
+
+                <div class="card-header text-black" style="background-color: #3D167A70">
+                    <strong>{{ user2_name }}</strong>
+                </div>
+
+                <div class="card-body text-center">
+                    <h3 class="card-title">{{ user2_stats.left }}</h3>
+                    <p class="card-text text-muted mb-1">{{ user2_stats.budget }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-6">
+            <div class="card shadow" style="background-color: #9381ff;">
+
+                <div class="card-header text-black" style="background-color: #3D167A70">
+                    <strong>Spent</strong>
+                </div>
+
+                <div class="card-body text-center">
+                    <h3 class="card-title">{{ user1_stats.for_self }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="card shadow" style="background-color: #9381ff;">
+
+                <div class="card-header text-black" style="background-color: #3D167A70">
+                    <strong>Spent</strong>
+                </div>
+
+                <div class="card-body text-center">
+                    <h3 class="card-title">{{ user2_stats.for_self }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

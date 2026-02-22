@@ -11,6 +11,7 @@ media/
 staticfiles/
 
 # Virtual env
+.venv
 venv/
 .env/
 .idea/
@@ -19,3 +20,5 @@ venv/
 .DS_Store
 .fseventsd
 .Spotlight-V100
+
+_private

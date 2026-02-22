@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1> Delete Expense</h1>
+<p>Category: {{ item.category }}</p>
+<p>Amount: {{ item.amount }}</p>
+<p>date: {{ item.date }}</p>
+<p>Description: {{ item.description }}</p>
+
+<div class="mb-3">
+    <form method="post">
+        {% csrf_token %}
+        <a href="{% url 'records' %}" class="btn btn-primary btn-sm">Cancel</a>
+        <button type="submit" class="btn btn-primary btn-sm">Delete</button>
+    </form>
+</div>
+<hr>
+
+
+{% endblock %}
