@@ -11,7 +11,7 @@
         /* ===== COLOR SYSTEM - CHANGE THESE THREE COLORS ===== */
         :root {
             /* Budget Section - Purple theme */
-            --budget-primary: #9381ff;
+            --budget-primary: #7f71bf;
             --budget-light: #b8b8ff;
             --budget-header: #3D167A70;
 
@@ -35,6 +35,7 @@
         body {
             background-color: var(--bg-page);
             color: var(--text-dark);
+            padding-bottom: 80px; /* adjust once globally */
         }
 
         /* ===== CARD SYSTEM ===== */
@@ -93,7 +94,58 @@
             background-color: var(--deposit-primary);
         }
 
+        /* ===== RESPONSIVE TABLE FIXES ===== */
+
+        /* Make tables scrollable on mobile */
+        .table-responsive-mobile {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Reduce table padding on mobile */
+        @media (max-width: 768px) {
+            .table-budget tbody tr td,
+            .table-deposit tbody tr td {
+                padding: 0.5rem 0.5rem !important;  /* Reduced from 0.75rem 1rem */
+                font-size: 0.875rem;  /* Slightly smaller font */
+            }
+
+            /* Make action buttons smaller on mobile */
+            .table-budget .btn-sm,
+            .table-deposit .btn-sm {
+                font-size: 0.75rem;
+                padding: 0.25rem 0.5rem;
+            }
+        }
+
         /* ===== TABLE STYLES ===== */
+
+        /* Budget Table Styles */
+        .table-budget {
+            background-color: transparent !important;
+            margin-bottom: 0;
+        }
+
+        .table-budget tbody tr {
+            background-color: var(--budget-light) !important;
+        }
+
+        .table-budget tbody tr:nth-child(even) {
+            background-color: rgba(147, 129, 255, 0.3) !important;
+        }
+
+        .table-budget tbody tr td {
+            background-color: transparent !important;
+            padding: 0.75rem 1rem;
+            border: none !important;
+        }
+
+        .table-budget tfoot tr {
+            background-color: var(--budget-header) !important;
+            border-top: 2px solid var(--budget-primary) !important;
+        }
+
+        /* Deposit Table Styles */
         .table-deposit {
             background-color: transparent !important;
             margin-bottom: 0;
@@ -135,6 +187,10 @@
         }
 
         /* ===== FOOTER NAV ===== */
+        footer {
+        backdrop-filter: blur(20px);
+        }
+
         footer .nav-link {
             padding: 1rem;
             color: var(--text-dark);
@@ -167,22 +223,32 @@
         .divider-vertical {
             border-right: 2px solid var(--border-color);
         }
+
+
     </style>
 </head>
 
 <body>
     <main class="pb-5">
         <div class="container-fluid">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show mt-1">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
         {% block content %}
         {% endblock %}
         </div>
     </main>
 
-    <footer class="navbar fixed-bottom border-top bg-light">
+    <footer class="navbar fixed-bottom border-top">
         <div class="container-fluid">
             <div class="row text-center w-100 m-0">
                 <div class="col">
-                    <a class="nav-link" href="{% url 'records' %}">Records</a>
+                    <a class="nav-link" href="{% url 'expense_list' %}">Expense</a>
                 </div>
                 <div class="col">
                     <a class="nav-link" href="{% url 'add_expense' %}">Add</a>

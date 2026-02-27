@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-3">
+
+    <!-- ROW 1: Month Selector Bar -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card card-budget-primary shadow-sm">
+                <div class="card-header text-center py-2">
+                    <small class="fw-semibold">{{ selected_month_name }} {{ selected_year }}</small>
+                </div>
+
+                <div class="card-body p-2">
+                    <!-- Month Buttons -->
+                    <div class="btn-group w-100" role="group">
+                        {% for month_num in month_range %}
+                            <a href="?month={{ month_num }}&year={{ selected_year }}"
+                               class="btn btn-sm {% if month_num == selected_month %}btn-light{% else %}btn-outline-light{% endif %}">
+                                {{ month_num }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ROW 2: Quick Stats Cards -->
+    <div class="row mb-3">
+        <!-- Personal Expenses Card -->
+        <div class="col-6">
+            <div class="card card-budget-primary shadow-sm">
+                <div class="card-body text-center py-3">
+                    <p class="text-label mb-1">Personal</p>
+                    <h3 class="text-value mb-0">{{ personal_total|floatformat:0 }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shared Expenses Card -->
+        <div class="col-6">
+            <div class="card card-deposit-primary shadow-sm">
+                <div class="card-body text-center py-3">
+                    <p class="text-label mb-1">Shared</p>
+                    <h3 class="text-value mb-0">{{ shared_total|floatformat:0 }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row mb-3">
+        <!-- user selector -->
+        <div class="col-4">
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% if selected_user == 0 %}Both{% else %}
+                        {% for user in users %}{% if user.id == selected_user %}{{ user.username }}{% endif %} {% endfor %}
+                    {% endif %}
+                </button>
+
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item" href="?month={{ selected_month }}&year={{ selected_year }}&user=0 ">
+                            Both
+                        </a>
+                    </li>
+                    {% for user in users %}
+                        <li>
+                            <a class="dropdown-item" href="?month={{ selected_month }}&year={{ selected_year }}&user={{ user.id }}">
+                                {{ user.username}}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!--category selector-->
+        <div class="col-4">
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
+                    {% if selected_category %}
+                        {{ selected_category|title }}
+                    {% else %}
+                        All
+                    {% endif %}
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="?month={{ selected_month }}&year={{ selected_year }}&user={{ selected_user }}">All</a></li>
+                    {% for code, name in category_choices %}
+                        <li><a class="dropdown-item" href="?month={{ selected_month }}&year={{ selected_year }}&user={{ selected_user }}&category={{ code }}">{{ name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!--year-selector-->
+        <div class="col-4">
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
+                    {{ selected_year }}
+                </button>
+                <ul class="dropdown-menu">
+                    {% for year in year_range %}
+                        <li><a class="dropdown-item" href="?month={{ selected_month }}&year={{ selected_year }}&user={{ selected_user }}">{{ year }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ROW 3: Transaction List -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card card-budget shadow">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <strong>Transactions</strong>
+                        <span class="badge">{{ expenses.count }} entries</span>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-budget mb-0">
+                            <tbody>
+                                {% for expense in expenses %}
+                                <tr>
+                                    <!-- Date Column -->
+                                    <td>
+                                        <div class="fw-semibold">{{ expense.date|date:"d" }}</div>
+                                        <small class="text-muted">{{ expense.user.username }}</small>
+                                    </td>
+
+                                    <td>
+                                        <div class="fw-bold">{{ expense.amount|floatformat:0 }}</div>
+                                        <small class="text-muted">{{ expense.get_category_display }}</small>
+                                    </td>
+
+                                    <!-- Description Column -->
+                                    <td>
+                                        <span class="text-truncate d-inline-block" style="max-width: 200px;">
+                                            {{ expense.description|default:"—" }}
+                                        </span>
+                                    </td>
+
+                                    <!-- Actions Column -->
+                                    <td class="text-end">
+                                        <a href="{% url 'edit_expense' expense.id %}"
+                                           class="btn btn-sm btn-warning">
+                                            Edit
+                                        </a>
+                                        <a href="{% url 'delete_expense' expense.id %}"
+                                           class="btn btn-sm btn-danger">
+                                            Delete
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">
+                                        <div class="mb-2">📭</div>
+                                        <div>No expenses for {{ selected_month_name }} {{ selected_year }}</div>
+                                        <a href="{% url 'add_expense' %}" class="btn btn-sm btn-primary mt-2">
+                                            Add First Expense
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

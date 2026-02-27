@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-3">
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card card-budget shadow">
+
+                <div class="card-header text-center">
+                    <strong>All Income</strong>
+                </div>
+
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-budget">
+                            <tbody>
+                            {% for item in income_data.values %}
+                                <tr>
+                                    <td>{{ item.date|date:"d" }}</td>
+                                    <td>{{ item.user.username }}</td>
+                                    <td>{{ item.description|default:"-" }}</td>
+                                    <td class="text-end fw-semibold">{{ item.amount|floatformat:0 }}</td>
+                                    <td class="text-center">
+                                        <a href="{% url 'edit_income' item.id %}" class="btn btn-sm btn-warning">Edit</a>
+                                        <a href="{% url 'delete_income' item.id %}" class="btn btn-sm btn-danger">Delete</a>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-3">No budgets yet</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="row mb-5">
+        <div class="col-6">
+            <a href="{% url 'add_income' %}" class="btn btn-primary w-100">
+                + Add Income
+            </a>
+        </div>
+        <div class="col-6">
+            <a href="{% url 'summary' %}" class="btn btn-secondary w-100">
+                Back to Summary
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

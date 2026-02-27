@@ -4,18 +4,18 @@
 
 <div class="container mt-3">
 
-    <!-- ROW 1: Total Income Overview -->
+    <!-- ROW 1: Total Deposit Overview -->
     <div class="row mb-3">
         <div class="col-12">
-            <div class="card card-budget card-budget-primary shadow">
+            <div class="card card-deposit card-deposit-primary shadow">
                 <div class="card-header text-center">
-                    <strong>Income</strong>
+                    <strong>Deposit</strong>
                 </div>
                 <div class="card-body">
                     <div class="row text-center">
                         <div class="col-12">
                             <p class="text-label">This month ({{ current_month }})</p>
-                            <h3 class="text-value">฿{{ current_month_income_amount|floatformat:0 }}</h3>
+                            <h3 class="text-value">฿{{ current_month_deposit_amount|floatformat:0 }}</h3>
                         </div>
                     </div>
                 </div>
@@ -23,12 +23,12 @@
         </div>
     </div>
 
-    <!-- Row 2: Add income form -->
+    <!-- Row 2: Add deposit form in a card -->
     <div class="row mb-3">
         <div class="col-12">
-            <div class="card card-budget shadow">
+            <div class="card card-deposit shadow-sm">
                 <div class="card-header">
-                    <h5 class="mb-0">✨ Add Income</h5>
+                    <h5 class="mb-0">💰 Add Deposit</h5>
                 </div>
                 <div class="card-body">
                     <form method="post">
@@ -41,26 +41,26 @@
         </div>
     </div>
 
-    <!-- ROW 3: Current Month Income Table -->
+    <!-- ROW 3: Current Month Deposit Table -->
     <div class="row mb-3">
         <div class="col-12">
-            <div class="card card-budget shadow">
+            <div class="card card-deposit shadow">
                 <div class="card-header text-center">
-                    <strong>Income Record</strong>
+                    <strong>Deposit Record</strong>
                 </div>
                 <div class="card-body p-0">
-                    <table class="table table-budget">
+                    <table class="table table-deposit">
                         <tbody>
-                        {% for item in income_data.values %}
+                        {% for item in deposit_data.values %}
                             <tr>
                                 <td>{{ item.date }}</td>
-                                <td>{{ item.user.username }}</td>
+                                <td>{{ item.user }}</td>
                                 <td>{{ item.description|default:"-" }}</td>
                                 <td class="text-end fw-semibold">฿{{ item.amount|floatformat:0 }}</td>
                             </tr>
                         {% empty %}
                             <tr>
-                                <td colspan="4" class="text-center text-muted py-3">No income this month</td>
+                                <td colspan="4" class="text-center text-muted py-3">No deposits this month</td>
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -76,7 +76,7 @@
             <a href="{% url 'add_income' %}" class="btn btn-primary w-100">Income</a>
         </div>
         <div class="col-6">
-            <a href="{% url 'income_list' %}" class="btn btn-primary w-100">History</a>
+            <a href="{% url 'deposit_list' %}" class="btn btn-primary w-100">History</a>
         </div>
         <div class="col-3">
             <a href="{% url 'add_deposit' %}" class="btn btn-primary w-100">Deposit</a>

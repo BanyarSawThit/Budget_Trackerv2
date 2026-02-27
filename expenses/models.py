@@ -49,7 +49,7 @@ class Income(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=0)
     description = models.TextField(blank=True)
-    date = models.DateField()
+    date = models.DateField(default=datetime.today)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -63,7 +63,7 @@ class Deposit(models.Model):
     objects = models.Manager()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=0)
-    date = models.DateField()
+    date = models.DateField(default=datetime.today)
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

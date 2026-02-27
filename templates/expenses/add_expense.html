@@ -8,20 +8,20 @@
     <div class="row mb-3">
         <!-- Today's Total Card -->
         <div class="col-6">
-            <div class="card shadow" style="background-color: #9381ff;">
+            <div class="card card-budget-primary shadow">
                 <div class="card-body text-center">
-                    <p class="card-text text-muted mb-1">Today</p>
-                    <h3 class="card-title">฿{{ today_total }}</h3>
+                    <small class="card-text text-muted mb-1">Today</small>
+                    <h3 class="card-title">{{ today_total }}</h3>
                 </div>
             </div>
         </div>
 
         <!-- Monthly Total Card -->
         <div class="col-6">
-            <div class="card shadow" style="background-color: #9381ff;">
+            <div class="card card-budget-primary shadow">
                 <div class="card-body text-center">
-                    <p class="card-text text-muted mb-1">This Month</p>
-                    <h3 class="card-title">฿{{ monthly_total }}</h3>
+                    <small class="card-text text-muted mb-1">This Month</small>
+                    <h3 class="card-title">{{ monthly_total }}</h3>
                 </div>
             </div>
         </div>
@@ -30,7 +30,7 @@
     <!-- Row 2: Add expense form in a card -->
     <div class="row mb-3">
         <div class="col-12">
-            <div class="card shadow-sm" >
+            <div class="card card-budget shadow-sm" >
                 <div class="card-header">
                     <h5 class="mb-0"> ✨ Add Expense</h5>
                 </div>
@@ -38,7 +38,7 @@
                     <form method="post">
                         {% csrf_token %}
                         {{ form.as_p }}
-                        <button type="submit" class="btn btn-lg w-100">Save 💸</button>
+                        <button type="submit" class="btn btn-primary btn-lg w-100">Save 💸</button>
                     </form>
                 </div>
             </div>
@@ -48,23 +48,17 @@
     <!-- Row 3: Today's spending list -->
     <div class="row">
         <div class="col-12">
-            <div class="card shadow-sm">
+            <div class="card card-budget-primary shadow-sm">
                 <div class="card-header">
                     <h5 class="mb-0"> 📋 Today's Spending</h5>
                 </div>
                 <div class="card-body p-0">
-                    <table class="table table-striped mb-0">
-                        <thead>
-                            <tr>
-                                <th>Category</th>
-                                <th>Amount</th>
-                            </tr>
-                        </thead>
+                    <table class="table table-budget mb-0">
                         <tbody>
                             {% for item in today_list %}
                             <tr>
                                 <td>{{ item.get_category_display }}</td>
-                                <td >฿{{ item.amount }}</td>
+                                <td >{{ item.amount }}</td>
                             </tr>
                             {% empty %}
                             <tr>
