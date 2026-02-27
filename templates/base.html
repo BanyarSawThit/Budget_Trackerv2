@@ -181,30 +181,49 @@
             border: none;
         }
 
+        .btn-light {
+            background-color: var(--budget-light);
+            border:none;
+        }
+
+        .btn-deposit {
+            background-color: var(--deposit-primary);
+            border:none;
+        }
+
         .btn-primary:hover {
             background-color: var(--budget-primary);
             opacity: 0.9;
         }
 
+        .btn-light:hover {
+            background-color: var(--budget-light);
+            opacity: 0.9;
+        }
+
         /* ===== FOOTER NAV ===== */
         footer {
-        backdrop-filter: blur(20px);
+        backdrop-filter: blur(10px);
         }
 
         footer .nav-link {
-            padding: 1rem;
+            text-decoration: none;
+            padding: 0.5rem;
             color: var(--text-dark);
-            transition: all 0.2s;
+
+            transform 0.4s;
+            position: relative;
         }
 
         footer .nav-link:hover {
-            background-color: var(--budget-light);
-            color: var(--budget-primary);
+            transform: translateY(-5px);
         }
 
         footer .nav-link.active {
-            background-color: var(--budget-primary);
-            color: white;
+            background-color: rgba(127, 113, 191, 0.3);
+            border-radius: 8px;
+            transform: translateY(-3px);
+            color: var(--text-dark);
         }
 
         /* ===== UTILITIES ===== */
@@ -248,13 +267,13 @@
         <div class="container-fluid">
             <div class="row text-center w-100 m-0">
                 <div class="col">
-                    <a class="nav-link" href="{% url 'expense_list' %}">Expense</a>
+                    <a class="nav-link rounded {% if request.resolver_match.url_name == 'expense_list' %}active{% endif %}" href="{% url 'expense_list' %}">Expense</a>
                 </div>
                 <div class="col">
-                    <a class="nav-link" href="{% url 'add_expense' %}">Add</a>
+                    <a class="nav-link rounded {% if request.resolver_match.url_name == 'add_expense' %}active{% endif %}" href="{% url 'add_expense' %}">Add</a>
                 </div>
                 <div class="col">
-                    <a class="nav-link" href="{% url 'summary' %}">User</a>
+                    <a class="nav-link rounded {% if request.resolver_match.url_name == 'summary' %}active{% endif %}" href="{% url 'summary' %}">User</a>
                 </div>
             </div>
         </div>

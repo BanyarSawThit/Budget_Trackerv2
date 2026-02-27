@@ -7,22 +7,26 @@
     <!-- ROW 1: Month Selector Bar -->
     <div class="row mb-3">
         <div class="col-12">
-            <div class="card card-budget-primary shadow-sm">
-                <div class="card-header text-center py-2">
-                    <small class="fw-semibold">{{ selected_month_name }} {{ selected_year }}</small>
+            <div class="card card-budget shadow-sm">
+                <div class="card-body text-center p-2">
+                    <p class="text-label mb-1">{{ selected_month_name }} {{ selected_year }}</p>
+                    <h3 class="text-value">{{ month_total|floatformat:0 }}</h3>
                 </div>
 
-                <div class="card-body p-2">
-                    <!-- Month Buttons -->
-                    <div class="btn-group w-100" role="group">
-                        {% for month_num in month_range %}
-                            <a href="?month={{ month_num }}&year={{ selected_year }}"
-                               class="btn btn-sm {% if month_num == selected_month %}btn-light{% else %}btn-outline-light{% endif %}">
-                                {{ month_num }}
-                            </a>
-                        {% endfor %}
-                    </div>
-                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-12">
+            <!-- Month Buttons -->
+            <div class="btn-group w-100" role="group">
+                {% for month_num in month_range %}
+                    <a href="?month={{ month_num }}&year={{ selected_year }}"
+                       class="btn btn-sm {% if month_num == selected_month %}btn-light{% else %}btn-primary{% endif %}">
+                        {{ month_num }}
+                    </a>
+                {% endfor %}
             </div>
         </div>
     </div>
@@ -32,7 +36,7 @@
     <div class="row mb-3">
         <!-- Personal Expenses Card -->
         <div class="col-6">
-            <div class="card card-budget-primary shadow-sm">
+            <div class="card card-budget shadow-sm">
                 <div class="card-body text-center py-3">
                     <p class="text-label mb-1">Personal</p>
                     <h3 class="text-value mb-0">{{ personal_total|floatformat:0 }}</h3>
@@ -42,7 +46,7 @@
 
         <!-- Shared Expenses Card -->
         <div class="col-6">
-            <div class="card card-deposit-primary shadow-sm">
+            <div class="card card-deposit shadow-sm">
                 <div class="card-body text-center py-3">
                     <p class="text-label mb-1">Shared</p>
                     <h3 class="text-value mb-0">{{ shared_total|floatformat:0 }}</h3>
@@ -56,12 +60,19 @@
         <!-- user selector -->
         <div class="col-4">
             <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    {% if selected_user == 0 %}Both{% else %}
-                        {% for user in users %}{% if user.id == selected_user %}{{ user.username }}{% endif %} {% endfor %}
-                    {% endif %}
-                </button>
-
+                {% if selected_user == 0 %}
+                    <button class="btn btn-primary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Both
+                    </button>
+                {% else %}
+                    {% for user in users %}
+                        {% if user.id == selected_user %}
+                        <button class="btn btn-light dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ user.username }}
+                        </button>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
                 <ul class="dropdown-menu">
                     <li>
                         <a class="dropdown-item" href="?month={{ selected_month }}&year={{ selected_year }}&user=0 ">
@@ -106,7 +117,7 @@
                 </button>
                 <ul class="dropdown-menu">
                     {% for year in year_range %}
-                        <li><a class="dropdown-item" href="?month={{ selected_month }}&year={{ selected_year }}&user={{ selected_user }}">{{ year }}</a></li>
+                        <li><a class="dropdown-item" href="?month={{ selected_month }}&year={{ year }}&user={{ selected_user }}">{{ year }}</a></li>
                     {% endfor %}
                 </ul>
             </div>

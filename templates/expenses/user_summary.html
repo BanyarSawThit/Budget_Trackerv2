@@ -164,13 +164,21 @@
 
     <!-- Action Buttons (Placeholder for Income/Deposit forms) -->
     <div class="row mb-5">
-        <div class="col-6">
+        <div class="col-4">
             <a href="{% url 'add_income' %}" class="btn btn-primary w-100">
                 Income
             </a>
         </div>
-        <div class="col-6">
-            <a href="{% url 'add_deposit' %}" class="btn btn-primary w-100">
+        <div class="col-4">
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button class="btn btn-warning w-100">
+                    Logout
+                </button>
+            </form>
+        </div>
+        <div class="col-4">
+            <a href="{% url 'add_deposit' %}" class="btn btn-deposit w-100">
                 Deposit
             </a>
         </div>

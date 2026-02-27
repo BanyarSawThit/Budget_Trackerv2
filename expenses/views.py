@@ -41,6 +41,8 @@ def expense_list(request):
     if selected_category:
         expenses = expenses.filter(category=selected_category)
 
+    month_total = (expenses.aggregate(Sum('amount'))['amount__sum'] or 0)
+
     shared_total = (expenses
                        .filter(category__in=SHARED_CATEGORIES)
                        .aggregate(Sum('amount'))['amount__sum'] or 0)
@@ -56,6 +58,7 @@ def expense_list(request):
         'selected_category': selected_category,
         'category_choices': category_choices,
 
+        'month_total': month_total,
         'shared_total': shared_total,
         'personal_total': personal_total,
         'selected_month': selected_month,
@@ -120,7 +123,7 @@ def edit_expense(request, id):
 
 @login_required
 def delete_expense(request, id):
-    item = get_object_or_404(Expense, id=id)
+    item = get_object_or_404(Expense, id=id, user=request.user)
     if request.method == 'POST':
         item.delete()
         return redirect('expense_list')
@@ -236,6 +239,7 @@ def summary(request):
     }
     return render(request, 'expenses/user_summary.html', context)
 
+
 @login_required
 def list_income(request):
     income = Income.objects.select_related('user').all()
@@ -255,6 +259,7 @@ def list_income(request):
         'income_data': income_data,
     }
     return render(request, 'expenses/income_list.html', context)
+
 
 @login_required
 def add_income(request):
@@ -296,9 +301,10 @@ def add_income(request):
     }
     return render(request, 'expenses/add_income.html', context)
 
+
 @login_required
 def edit_income(request, id):
-    income = get_object_or_404(Income, id=id)
+    income = get_object_or_404(Income, id=id, user=request.user)
     if request.method == 'POST':
         form = IncomeForm(request.POST, instance=income)
         if form.is_valid():
@@ -311,7 +317,7 @@ def edit_income(request, id):
 
 @login_required
 def delete_income(request, id):
-    income = get_object_or_404(Income, id=id)
+    income = get_object_or_404(Income, id=id, user=request.user)
     if request.method == 'POST':
         income.delete()
         return redirect('income_list')
@@ -377,7 +383,7 @@ def add_deposit(request):
 
 @login_required
 def edit_deposit(request, id):
-    deposit_item = get_object_or_404(Deposit, id=id)
+    deposit_item = get_object_or_404(Deposit, id=id, user=request.user)
     if request.method == 'POST':
         form = DepositForm(request.POST, instance=deposit_item)
         if form.is_valid():
@@ -389,7 +395,7 @@ def edit_deposit(request, id):
 
 @login_required
 def delete_deposit(request, id):
-    deposit_item = get_object_or_404(Deposit, id=id)
+    deposit_item = get_object_or_404(Deposit, id=id, user=request.user)
 
     if request.method == 'POST':
         deposit_item.delete()

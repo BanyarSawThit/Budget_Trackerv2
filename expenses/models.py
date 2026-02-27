@@ -6,11 +6,11 @@ from django.contrib.auth.models import User
 
 
 CATEGORY_CHOICES = [
-        ('food', 'Food'),
+        ('food', 'Food*'),
         ('drink', 'Drink'),
         ('commute', 'Commute'),
-        ('grocery', 'Grocery'),
-        ('utility', 'Utility'),
+        ('grocery', 'Grocery*'),
+        ('utility', 'Utility*'),
         ('wear', 'Wear'),
         ('cosmetic', 'Cosmetic'),
         ('fun', 'Fun & Snack')
