@@ -177,6 +177,7 @@ def summary(request):
 
     # === PERSONAL SPENDING (non-shared) ===
     total_personal_spent = (Expense.objects
+                            .filter(date__month=date.today().month,date__year=date.today().year)
                             .exclude(category__in=SHARED_CATEGORIES)
                             .aggregate(Sum('amount'))
                             ['amount__sum'] or 0)
@@ -197,7 +198,9 @@ def summary(request):
         budget = income - deposit
 
         # User's expenses
-        user_expenses = Expense.objects.filter(user=user)
+        user_expenses = Expense.objects.filter(user=user
+                                               ,date__month=date.today().month
+                                               ,date__year=date.today().year)
         monthly_spent = user_expenses.aggregate(Sum('amount'))['amount__sum'] or 0
 
         for_both = (user_expenses
@@ -278,7 +281,8 @@ def add_income(request):
                          .filter(date__month=date.today().month,
                                  date__year=date.today().year)
                          .aggregate(Sum('amount'))['amount__sum'] or 0)
-    current_month_income_list = income.filter(date__month=date.today().month)
+    current_month_income_list = income.filter(date__month=date.today().month
+                                              ,date__year=date.today().year)
 
     income_data = {}
 
@@ -362,7 +366,8 @@ def add_deposit(request):
                          .filter(date__month=date.today().month,
                                  date__year=date.today().year)
                          .aggregate(Sum('amount'))['amount__sum'] or 0)
-    current_month_deposit_list = deposit.filter(date__month=date.today().month)
+    current_month_deposit_list = deposit.filter(date__month=date.today().month,
+                                                date__year=date.today().year)
 
     deposit_data = {}
 
