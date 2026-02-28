@@ -6,6 +6,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'images/favicon.png' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         /* ===== COLOR SYSTEM - CHANGE THESE THREE COLORS ===== */
@@ -120,6 +123,11 @@
 
         /* ===== TABLE STYLES ===== */
 
+        .table-scroll {
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
         /* Budget Table Styles */
         .table-budget {
             background-color: transparent !important;
@@ -143,6 +151,37 @@
         .table-budget tfoot tr {
             background-color: var(--budget-header) !important;
             border-top: 2px solid var(--budget-primary) !important;
+        }
+
+        /* ===== Spending Table Styles ===== */
+
+        .table-spending {
+            background-color: transparent !important;
+            margin-bottom: 0;
+        }
+
+        .table-spending tbody tr {
+            background-color: var(--spending-light) !important;
+        }
+
+        .table-spending tbody tr:nth-child(even) {
+            background-color: rgba(124, 179, 66, 0.3) !important; /* lighter green stripe */
+        }
+
+        .table-spending tbody tr td {
+            background-color: transparent !important;
+            padding: 0.75rem 1rem;
+            border: none !important;
+        }
+
+        .table-spending tfoot tr {
+            background-color: var(--spending-header) !important;
+            border-top: 2px solid var(--spending-primary) !important;
+        }
+
+        .table-spending tfoot tr td {
+            background-color: transparent !important;
+            border: none !important;
         }
 
         /* Deposit Table Styles */

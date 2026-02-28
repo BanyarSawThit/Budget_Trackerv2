@@ -55,7 +55,31 @@
         </div>
     </div>
 
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card card-budget shadow">
+                <div class="card-header text-center">
+                    <strong>By Category</strong>
+                </div>
+                <div class="table-scroll">
+                    <div class="card-body p-0">
+                        <table class="table table-budget">
+                            <tbody>
+                            {% for key, values in top_cats.items %}
+                                <tr>
+                                    <td>{{key}}</td>
+                                    <td class="text-end fw-semibold">{{ values }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- Selectors -->
     <div class="row mb-3">
         <!-- user selector -->
         <div class="col-4">

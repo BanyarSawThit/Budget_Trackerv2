@@ -1,7 +1,7 @@
 # expenses/views
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db.models import Sum
+from django.db.models import Sum, Count
 from datetime import date
 from django.shortcuts import render, redirect, get_object_or_404
 from calendar import month_name
@@ -38,7 +38,15 @@ def expense_list(request):
     if selected_user != 0:
         expenses = expenses.filter(user_id=selected_user)
 
+    top_cats = {}
+    for code, name in category_choices:
+        top_cats[name] = (expenses
+                          .filter(category=code)
+                          .aggregate(Sum('amount'))['amount__sum'] or 0)
+    top_cats = dict(sorted(top_cats.items(), key=lambda item: item[1], reverse=True))
+
     if selected_category:
+        print(selected_category)
         expenses = expenses.filter(category=selected_category)
 
     month_total = (expenses.aggregate(Sum('amount'))['amount__sum'] or 0)
@@ -57,6 +65,7 @@ def expense_list(request):
         'selected_user': selected_user,
         'selected_category': selected_category,
         'category_choices': category_choices,
+        'top_cats': top_cats,
 
         'month_total': month_total,
         'shared_total': shared_total,
@@ -315,6 +324,7 @@ def edit_income(request, id):
 
     return render(request, 'expenses/edit_income.html', {'form': form, 'item': income})
 
+
 @login_required
 def delete_income(request, id):
     income = get_object_or_404(Income, id=id, user=request.user)
@@ -322,6 +332,7 @@ def delete_income(request, id):
         income.delete()
         return redirect('income_list')
     return render(request, 'expenses/delete_income.html', {'item': income})
+
 
 @login_required
 def list_deposit(request):
@@ -342,6 +353,7 @@ def list_deposit(request):
         'deposit_data': deposit_data,
     }
     return render(request, 'expenses/deposit_list.html', context)
+
 
 @login_required
 def add_deposit(request):
@@ -381,6 +393,7 @@ def add_deposit(request):
     }
     return render(request, 'expenses/add_deposit.html', context)
 
+
 @login_required
 def edit_deposit(request, id):
     deposit_item = get_object_or_404(Deposit, id=id, user=request.user)
@@ -392,6 +405,7 @@ def edit_deposit(request, id):
     else:
         form = DepositForm(instance=deposit_item)
     return render(request, 'expenses/edit_deposit.html', {'form': form, 'item': deposit_item})
+
 
 @login_required
 def delete_deposit(request, id):
