@@ -24,4 +24,7 @@ urlpatterns = [
     # user summary
     path('user/', views.summary, name='summary'),
 
+    path('export/expenses', views.export_expense_csv, name='expose_expense'),
+    path('export/all/', views.export_all_csv, name='export_all_csv'),
+
 ]

@@ -1,8 +1,12 @@
 # expenses/views
+import csv
+
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Sum, Count
-from datetime import date
+from datetime import date, datetime
+
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from calendar import month_name
 
@@ -421,3 +425,49 @@ def delete_deposit(request, id):
         return redirect('add_deposit')
 
     return render(request, 'expenses/delete_deposit.html', {'item': deposit_item})
+
+
+def export_expense_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="expense.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Date', 'User', 'Category', 'Amount', 'Description'])
+
+    for e in Expense.objects.select_related('user').filter(date__month=datetime.today().month, date__year=datetime.today().year).order_by('date'):
+        writer.writerow([e.date, e.user.username, e.get_category_display(), e.amount, e.description])
+
+    return response
+
+
+@login_required
+def export_all_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    filename = f"budget_export_{datetime.today().strftime('%Y-%m-%d')}.csv"
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+    writer = csv.writer(response)
+
+    # --- INCOME ---
+    writer.writerow(['--- INCOME ---'])
+    writer.writerow(['Date', 'User', 'Amount', 'Description'])
+    for i in Income.objects.select_related('user').filter(date__month=datetime.today().month, date__year=datetime.today().year).order_by('date'):
+        writer.writerow([i.date, i.user.username, i.amount, i.description])
+
+    writer.writerow([])  # blank spacer row
+
+    # --- DEPOSITS ---
+    writer.writerow(['--- DEPOSITS ---'])
+    writer.writerow(['Date', 'User', 'Amount', 'Description'])
+    for d in Deposit.objects.select_related('user').filter(date__month=datetime.today().month, date__year=datetime.today().year).order_by('date'):
+        writer.writerow([d.date, d.user.username, d.amount, d.description])
+
+    writer.writerow([])  # blank spacer row
+
+    # --- EXPENSES ---
+    writer.writerow(['--- EXPENSES ---'])
+    writer.writerow(['Date', 'User', 'Category', 'Amount', 'Description'])
+    for e in Expense.objects.select_related('user').filter(date__month=datetime.today().month, date__year=datetime.today().year).order_by('date'):
+        writer.writerow([e.date, e.user.username, e.get_category_display(), e.amount, e.description])
+
+    return response
