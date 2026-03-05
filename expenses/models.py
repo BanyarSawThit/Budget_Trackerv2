@@ -6,15 +6,16 @@ from django.contrib.auth.models import User
 
 
 CATEGORY_CHOICES = [
-        ('food', 'Food*'),
-        ('drink', 'Drink'),
-        ('commute', 'Commute'),
-        ('grocery', 'Grocery*'),
-        ('utility', 'Utility*'),
-        ('wear', 'Wear'),
-        ('cosmetic', 'Cosmetic'),
-        ('fun', 'Fun & Snack')
-    ]
+    ('food', 'Food*'),
+    ('drink', 'Drink'),
+    ('commute', 'Commute'),
+    ('grocery', 'Grocery*'),
+    ('utility', 'Utility*'),
+    ('wear', 'Wear'),
+    ('cosmetic', 'Cosmetic'),
+    ('fun', 'Fun & Snack'),
+    ('others', 'Others')
+                    ]
 
 SHARED_CATEGORIES = ['food', 'grocery', 'utility']
 

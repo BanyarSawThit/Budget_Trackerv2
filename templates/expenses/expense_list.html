@@ -7,10 +7,10 @@
     <!-- ROW 1: Month Selector Bar -->
     <div class="row mb-3">
         <div class="col-12">
-            <div class="card card-budget shadow-sm">
-                <div class="card-body text-center p-2">
-                    <p class="text-label mb-1">{{ selected_month_name }} {{ selected_year }}</p>
-                    <h3 class="text-value">{{ month_total|floatformat:0 }}</h3>
+            <div class="card card-budget shadow">
+                <div class="card-body text-center">
+                    <small class="card-text text-muted mb-1">{{ selected_month_name }} {{ selected_year }}</small>
+                    <h3 class="card-title text-value">{{ month_total|floatformat:0 }}</h3>
                 </div>
 
             </div>
@@ -36,20 +36,20 @@
     <div class="row mb-3">
         <!-- Personal Expenses Card -->
         <div class="col-6">
-            <div class="card card-budget shadow-sm">
+            <div class="card card-budget shadow">
                 <div class="card-body text-center py-3">
-                    <p class="text-label mb-1">Personal</p>
-                    <h3 class="text-value mb-0">{{ personal_total|floatformat:0 }}</h3>
+                    <small class="card-text text-muted mb-1">Personal</small>
+                    <h3 class="card-title text-value">{{ personal_total|floatformat:0 }}</h3>
                 </div>
             </div>
         </div>
 
         <!-- Shared Expenses Card -->
         <div class="col-6">
-            <div class="card card-deposit shadow-sm">
+            <div class="card card-deposit shadow">
                 <div class="card-body text-center py-3">
-                    <p class="text-label mb-1">Shared</p>
-                    <h3 class="text-value mb-0">{{ shared_total|floatformat:0 }}</h3>
+                    <small class="card-text text-muted mb-1">Shared</small>
+                    <h3 class="card-title text-value">{{ shared_total|floatformat:0 }}</h3>
                 </div>
             </div>
         </div>
