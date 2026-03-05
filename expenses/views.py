@@ -426,7 +426,7 @@ def delete_deposit(request, id):
 
     return render(request, 'expenses/delete_deposit.html', {'item': deposit_item})
 
-
+@login_required
 def export_expense_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="expense.csv"'
