@@ -28,6 +28,11 @@
             --deposit-light: #b9d1f7;
             --deposit-header: #1976d280;
 
+            /* Income Section - Gold theme */
+            --income-primary: #c89b3c;
+            --income-light: #e7d7a8;
+            --income-header: #a87c2f80;
+
             /* Neutral colors */
             --bg-page: #f8f7ff;
             --text-dark: #2c3e50;
@@ -95,6 +100,22 @@
 
         .card-deposit-primary {
             background-color: var(--deposit-primary);
+        }
+
+        /* Income Cards */
+        .card-income {
+            background-color: var(--income-light);
+            border: none;
+        }
+
+        .card-income .card-header {
+            background-color: var(--income-header);
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .card-income-primary {
+            background-color: var(--income-primary);
         }
 
         /* ===== RESPONSIVE TABLE FIXES ===== */
@@ -214,7 +235,40 @@
             border: none !important;
         }
 
+        /* ===== Income Table Styles ===== */
+
+        .table-income {
+            background-color: transparent !important;
+            margin-bottom: 0;
+        }
+
+        .table-income tbody tr {
+            background-color: var(--income-light) !important;
+        }
+
+        .table-income tbody tr:nth-child(even) {
+            background-color: rgba(249, 168, 37, 0.3) !important; /* lighter gold stripe */
+        }
+
+        .table-income tbody tr td {
+            background-color: transparent !important;
+            padding: 0.75rem 1rem;
+            border: none !important;
+        }
+
+        .table-income tfoot tr {
+            background-color: var(--income-header) !important;
+            border-top: 2px solid var(--income-primary) !important;
+        }
+
+        .table-income tfoot tr td {
+            background-color: transparent !important;
+            border: none !important;
+        }
+
         /* ===== BUTTON STYLES ===== */
+
+        /* Budget Buttons */
         .btn-primary {
             background-color: var(--budget-primary);
             border: none;
@@ -222,12 +276,7 @@
 
         .btn-light {
             background-color: var(--budget-light);
-            border:none;
-        }
-
-        .btn-deposit {
-            background-color: var(--deposit-primary);
-            border:none;
+            border: none;
         }
 
         .btn-primary:hover {
@@ -237,6 +286,41 @@
 
         .btn-light:hover {
             background-color: var(--budget-light);
+            opacity: 0.9;
+        }
+
+
+        /* Deposit Buttons */
+        .btn-deposit {
+            background-color: var(--deposit-primary);
+            border: none;
+        }
+
+        .btn-deposit:hover {
+            background-color: var(--deposit-primary);
+            opacity: 0.9;
+        }
+
+
+        /* Income Buttons */
+        .btn-income {
+            background-color: var(--income-primary);
+            border: none;
+            color: #fff;
+        }
+
+        .btn-income-light {
+            background-color: var(--income-light);
+            border: none;
+        }
+
+        .btn-income:hover {
+            background-color: var(--income-primary);
+            opacity: 0.9;
+        }
+
+        .btn-income-light:hover {
+            background-color: var(--income-light);
             opacity: 0.9;
         }
 

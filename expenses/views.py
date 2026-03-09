@@ -428,10 +428,13 @@ def delete_deposit(request, id):
 
 @login_required
 def export_expense_csv(request):
+    month = datetime.today().strftime("%B")
+
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="expense.csv"'
 
     writer = csv.writer(response)
+    writer.writerow(['For '+month])
     writer.writerow(['Date', 'User', 'Category', 'Amount', 'Description'])
 
     for e in Expense.objects.select_related('user').filter(date__month=datetime.today().month, date__year=datetime.today().year).order_by('date'):
