@@ -83,7 +83,7 @@
     <div class="row mb-3">
         <!-- user selector -->
         <div class="col-4">
-            <div class="dropdown">
+            <div class="dropdown shadow">
                 {% if selected_user == 0 %}
                     <button class="btn btn-primary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Both
@@ -116,7 +116,7 @@
 
         <!--category selector-->
         <div class="col-4">
-            <div class="dropdown">
+            <div class="dropdown shadow">
                 <button class="btn btn-primary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
                     {% if selected_category %}
                         {{ selected_category|title }}
@@ -135,7 +135,7 @@
 
         <!--year-selector-->
         <div class="col-4">
-            <div class="dropdown">
+            <div class="dropdown shadow">
                 <button class="btn btn-primary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
                     {{ selected_year }}
                 </button>
@@ -145,6 +145,12 @@
                     {% endfor %}
                 </ul>
             </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-12">
+            <input type="search" id="searchBox" class="form-control" placeholder="Search description..." value="{{ selected_search }}">
         </div>
     </div>
 

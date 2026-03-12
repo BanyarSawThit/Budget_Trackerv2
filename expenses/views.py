@@ -13,6 +13,7 @@ from calendar import month_name
 from .forms import ExpenseForm, IncomeForm, DepositForm
 from .models import Expense, User, Income, SHARED_CATEGORIES, Deposit, CATEGORY_CHOICES
 
+from .notifications import notify_other_user
 
 @login_required
 def expense_list(request):
@@ -32,6 +33,7 @@ def expense_list(request):
     selected_year =  get_int(request.GET.get('year', date.today().year), date.today().year)
     selected_user = get_int(request.GET.get('user'), 0)
     selected_category = request.GET.get('category', '')
+    selected_search = request.GET.get('search', '')
 
     selected_month_name = month_name[selected_month]
     expenses = (Expense.objects
@@ -53,6 +55,9 @@ def expense_list(request):
         print(selected_category)
         expenses = expenses.filter(category=selected_category)
 
+    if selected_search:
+        expenses = expenses.filter(description__icontains=selected_search)
+
     month_total = (expenses.aggregate(Sum('amount'))['amount__sum'] or 0)
 
     shared_total = (expenses
@@ -70,6 +75,7 @@ def expense_list(request):
         'selected_category': selected_category,
         'category_choices': category_choices,
         'top_cats': top_cats,
+        'selected_search': selected_search,
 
         'month_total': month_total,
         'shared_total': shared_total,
@@ -106,7 +112,14 @@ def add_expense(request):
             expense = form.save(commit=False)
             expense.user = request.user
             expense.save()
-            messages.success(request, f'Expense {expense.amount} added')
+
+            notify_other_user(
+                added_by_username=request.user.username,
+                amount=expense.amount,
+                category=expense.get_category_display(),
+                description=expense.description,
+            )
+
             return redirect('add_expense')
     else:
         form = ExpenseForm()
@@ -474,3 +487,5 @@ def export_all_csv(request):
         writer.writerow([e.date, e.user.username, e.get_category_display(), e.amount, e.description])
 
     return response
+
+

@@ -49,22 +49,24 @@
                     <strong>Income Record</strong>
                 </div>
                 <div class="card-body p-0">
-                    <table class="table table-income">
-                        <tbody>
-                        {% for item in income_data.values %}
-                            <tr>
-                                <td>{{ item.date }}</td>
-                                <td>{{ item.user.username }}</td>
-                                <td>{{ item.description|default:"-" }}</td>
-                                <td class="text-end fw-semibold">{{ item.amount|floatformat:0 }}</td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="4" class="text-center text-muted py-3">No income this month</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-income">
+                            <tbody>
+                            {% for item in income_data.values %}
+                                <tr>
+                                    <td>{{ item.date }}</td>
+                                    <td>{{ item.user.username }}</td>
+                                    <td>{{ item.description|default:"-" }}</td>
+                                    <td class="text-end fw-semibold">{{ item.amount|floatformat:0 }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-3">No income this month</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
