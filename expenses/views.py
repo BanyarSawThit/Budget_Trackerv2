@@ -459,16 +459,20 @@ def delete_deposit(request, id):
 
 @login_required
 def export_expense_csv(request):
-    month = datetime.today().strftime("%B")
+
+    expenses = (Expense.objects.
+                select_related('user')
+                .filter(date__month=datetime.today().month,
+                        date__year=datetime.today().year)
+                .order_by('date'))
 
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="expense.csv"'
 
     writer = csv.writer(response)
-    writer.writerow(['For '+month])
     writer.writerow(['Date', 'User', 'Category', 'Amount', 'Description'])
 
-    for e in Expense.objects.select_related('user').filter(date__month=datetime.today().month, date__year=datetime.today().year).order_by('date'):
+    for e in expenses:
         writer.writerow([e.date, e.user.username, e.get_category_display(), e.amount, e.description])
 
     return response
@@ -485,7 +489,7 @@ def export_all_csv(request):
     # --- INCOME ---
     writer.writerow(['--- INCOME ---'])
     writer.writerow(['Date', 'User', 'Amount', 'Description'])
-    for i in Income.objects.select_related('user').filter(date__month=datetime.today().month, date__year=datetime.today().year).order_by('date'):
+    for i in Income.objects.filter(user=request.user,date__month=datetime.today().month, date__year=datetime.today().year).order_by('date'):
         writer.writerow([i.date, i.user.username, i.amount, i.description])
 
     writer.writerow([])  # blank spacer row
@@ -493,7 +497,7 @@ def export_all_csv(request):
     # --- DEPOSITS ---
     writer.writerow(['--- DEPOSITS ---'])
     writer.writerow(['Date', 'User', 'Amount', 'Description'])
-    for d in Deposit.objects.select_related('user').filter(date__month=datetime.today().month, date__year=datetime.today().year).order_by('date'):
+    for d in Deposit.objects.filter(user=request.user,date__month=datetime.today().month, date__year=datetime.today().year).order_by('date'):
         writer.writerow([d.date, d.user.username, d.amount, d.description])
 
     writer.writerow([])  # blank spacer row
@@ -501,7 +505,7 @@ def export_all_csv(request):
     # --- EXPENSES ---
     writer.writerow(['--- EXPENSES ---'])
     writer.writerow(['Date', 'User', 'Category', 'Amount', 'Description'])
-    for e in Expense.objects.select_related('user').filter(date__month=datetime.today().month, date__year=datetime.today().year).order_by('date'):
+    for e in Expense.objects.filter(user=request.user,date__month=datetime.today().month, date__year=datetime.today().year).order_by('date'):
         writer.writerow([e.date, e.user.username, e.get_category_display(), e.amount, e.description])
 
     return response

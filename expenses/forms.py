@@ -1,7 +1,4 @@
-import datetime
-
 from django import forms
-from datetime import date
 
 from .models import Expense, Income, Deposit
 
