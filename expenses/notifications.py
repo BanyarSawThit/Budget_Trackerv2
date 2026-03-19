@@ -15,7 +15,8 @@ def send_telegram(chat_id, message):
 
 def notify_other_user(added_by_username, amount, category, description):
         msg = (
-            f"<b>{added_by_username}</b> | {category} | -{amount}\n"
-            f"\t {description or '-'}"
+            f"<b>{added_by_username}</b>  |  {category}  |  ฿ {amount}\n"
+            f"------------------------\n"
+            f"{description or '-'}"
         )
         send_telegram(GROUP_CHAT_ID, msg)

@@ -14,8 +14,8 @@ class ExpenseForm(forms.ModelForm):
             'category': forms.Select(attrs={'class': 'form-select'}),
             'description': forms.Textarea(attrs={
                 'class': 'form-control',
-                'rows': 2,
-                'placeholder': 'name, price',
+                'rows': 1,
+                'placeholder': '---\n---',
             }),
             'date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
         }
@@ -30,14 +30,14 @@ class ExpenseForm(forms.ModelForm):
 class IncomeForm(forms.ModelForm):
     class Meta:
         model = Income
-        fields = ['amount', 'date', 'description']
+        fields = ['amount', 'description', 'date']
         widgets = {
-            'amount': forms.NumberInput(attrs={'class': 'form-control'}),
+            'amount': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': '0'}),
             'date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'description': forms.Textarea(attrs={
                 'class': 'form-control',
                 'rows': 1,
-                'placeholder': 'Optional, chit.',
+                'placeholder': 'From...',
             })
         }
 
@@ -51,14 +51,14 @@ class IncomeForm(forms.ModelForm):
 class DepositForm(forms.ModelForm):
     class Meta:
         model = Deposit
-        fields = ['amount', 'date', 'description']
+        fields = ['amount', 'description', 'date']
         widgets = {
-            'amount': forms.NumberInput(attrs={'class': 'form-control'}),
+            'amount': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': '0'}),
             'date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'description': forms.Textarea(attrs={
                 'class': 'form-control',
                 'rows': 1,
-                'placeholder': 'Optional, chit.',
+                'placeholder': 'Note...',
             })
         }
 

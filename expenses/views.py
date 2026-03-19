@@ -155,6 +155,7 @@ def delete_expense(request, id):
         return redirect('expense_list')
     return render(request, 'expenses/delete_expense.html', {'item': item})
 
+
 @login_required
 def summary(request):
     current_user = request.user
@@ -315,9 +316,17 @@ def add_income(request):
     if request.method == 'POST':
         form = IncomeForm(request.POST)
         if form.is_valid():
-            expense = form.save(commit=False)
-            expense.user = request.user
-            expense.save()
+            income = form.save(commit=False)
+            income.user = request.user
+            income.save()
+
+            notify_other_user(
+                added_by_username=request.user.username,
+                amount=income.amount,
+                category="Income",
+                description=income.description
+            )
+
             return redirect('add_income')
     else:
         form = IncomeForm()
@@ -400,9 +409,17 @@ def add_deposit(request):
     if request.method == 'POST':
         form = DepositForm(request.POST)
         if form.is_valid():
-            expense = form.save(commit=False)
-            expense.user = request.user
-            expense.save()
+            deposit = form.save(commit=False)
+            deposit.user = request.user
+            deposit.save()
+
+            notify_other_user(
+                added_by_username=request.user.username,
+                amount=deposit.amount,
+                category="Deposit",
+                description=deposit.description
+            )
+
             return redirect('add_deposit')
     else:
         form = DepositForm()
