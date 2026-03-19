@@ -20,7 +20,7 @@
     <div class="row mb-3">
         <div class="col-12">
             <!-- Month Buttons -->
-            <div class="btn-group w-100" role="group">
+            <div class="btn-group w-100 shadow" role="group">
                 {% for month_num in month_range %}
                     <a href="?month={{ month_num }}&year={{ selected_year }}"
                        class="btn btn-sm {% if month_num == selected_month %}btn-light{% else %}btn-primary{% endif %}">
@@ -150,7 +150,7 @@
 
     <div class="row mb-3">
         <div class="col-12">
-            <input type="search" id="searchBox" class="form-control" placeholder="Search description..." value="{{ selected_search }}">
+            <input type="search" id="searchBox" class="form-control shadow" placeholder="Search description..." value="{{ selected_search }}">
         </div>
     </div>
 
@@ -221,5 +221,19 @@
     </div>
 
 </div>
-
+<script>
+    const searchBox = document.getElementById('searchBox');
+    let debounceTimer;
+    searchBox.addEventListener('input', function () {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            const params = new URLSearchParams(window.location.search);
+            params.set('search', this.value);
+            params.set('month', '{{ selected_month }}');
+            params.set('year', '{{ selected_year }}');
+            params.set('user', '{{ selected_user }}');
+            window.location.search = params.toString();
+        }, 500); // waits 500ms after user stops typing
+    });
+</script>
 {% endblock %}

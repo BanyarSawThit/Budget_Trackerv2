@@ -439,6 +439,7 @@ def delete_deposit(request, id):
 
     return render(request, 'expenses/delete_deposit.html', {'item': deposit_item})
 
+
 @login_required
 def export_expense_csv(request):
     month = datetime.today().strftime("%B")

@@ -8,16 +8,16 @@ from .models import Expense, Income, Deposit
 class ExpenseForm(forms.ModelForm):
     class Meta:
         model = Expense
-        fields = ['amount', 'category', 'date', 'description']
+        fields = ['amount', 'category','description', 'date',]
         widgets = {
-            'amount': forms.NumberInput(attrs={'class': 'form-control'}),
+            'amount': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': '0'}),
             'category': forms.Select(attrs={'class': 'form-select'}),
-            'date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'description': forms.Textarea(attrs={
                 'class': 'form-control',
-                'rows': 1,
-                'placeholder': 'if anything special..',
+                'rows': 2,
+                'placeholder': 'name, price',
             }),
+            'date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
         }
 
     def clean_amount(self):

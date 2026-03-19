@@ -333,7 +333,6 @@
             text-decoration: none;
             padding: 0.5rem;
             color: var(--text-dark);
-
             transform 0.4s;
             position: relative;
         }
@@ -343,9 +342,8 @@
         }
 
         footer .nav-link.active {
-            background-color: rgba(127, 113, 191, 0.3);
+            background-color: var(--budget-primary);
             border-radius: 8px;
-            transform: translateY(-3px);
             color: var(--text-dark);
         }
 
@@ -390,34 +388,19 @@
         <div class="container-fluid">
             <div class="row text-center w-100 m-0">
                 <div class="col">
-                    <a class="nav-link rounded {% if request.resolver_match.url_name == 'expense_list' %}active{% endif %}" href="{% url 'expense_list' %}">Expense</a>
+                    <a class="fw-bold nav-link rounded {% if request.resolver_match.url_name == 'expense_list' %}active{% endif %}" href="{% url 'expense_list' %}">Expense</a>
                 </div>
                 <div class="col">
-                    <a class="nav-link rounded {% if request.resolver_match.url_name == 'add_expense' %}active{% endif %}" href="{% url 'add_expense' %}">Add</a>
+                    <a class="fw-bold nav-link rounded {% if request.resolver_match.url_name == 'add_expense' %}active{% endif %}" href="{% url 'add_expense' %}">ADD</a>
                 </div>
                 <div class="col">
-                    <a class="nav-link rounded {% if request.resolver_match.url_name == 'summary' %}active{% endif %}" href="{% url 'summary' %}">User</a>
+                    <a class="fw-bold nav-link rounded {% if request.resolver_match.url_name == 'summary' %}active{% endif %}" href="{% url 'summary' %}">User</a>
                 </div>
             </div>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        const searchBox = document.getElementById('searchBox');
-        let debounceTimer;
-        searchBox.addEventListener('input', function () {
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(() => {
-                const params = new URLSearchParams(window.location.search);
-                params.set('search', this.value);
-                params.set('month', '{{ selected_month }}');
-                params.set('year', '{{ selected_year }}');
-                params.set('user', '{{ selected_user }}');
-                window.location.search = params.toString();
-            }, 500); // waits 500ms after user stops typing
-        });
-    </script>
 </body>
 
 </html>
