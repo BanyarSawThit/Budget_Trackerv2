@@ -73,3 +73,11 @@ class Deposit(models.Model):
 
     def __str__(self):
         return f"{self.user.username} deposited {self.amount} on {self.date}"
+
+class ShoppingItem(models.Model):
+    item =  models.CharField(max_length=100)
+    is_done = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']

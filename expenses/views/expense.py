@@ -1,19 +1,17 @@
-# expenses/views
 import csv
 
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.db.models import Sum, Count
+from django.db.models import Sum
 from datetime import date, datetime
 
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from calendar import month_name
 
-from .forms import ExpenseForm, IncomeForm, DepositForm
-from .models import Expense, User, Income, SHARED_CATEGORIES, Deposit, CATEGORY_CHOICES
+from expenses.forms import ExpenseForm
+from expenses.models import Expense, User, Income, SHARED_CATEGORIES, Deposit, CATEGORY_CHOICES
 
-from .notifications import notify_other_user
+from expenses.notifications import notify_other_user
 
 @login_required
 def expense_list(request):
@@ -270,192 +268,6 @@ def summary(request):
     return render(request, 'expenses/user_summary.html', context)
 
 
-@login_required
-def list_income(request):
-    income = Income.objects.select_related('user').all()
-
-    income_data = {}
-
-    for item in income:
-        income_data[item.id] = {
-            'id': item.id,
-            'user': item.user,
-            'amount': item.amount,
-            'date': item.date,
-            'description': item.description
-        }
-
-    context = {
-        'income_data': income_data,
-    }
-    return render(request, 'expenses/income_list.html', context)
-
-
-@login_required
-def add_income(request):
-
-    income = Income.objects.select_related('user').all()
-    current_month_income_amount = (income
-                         .filter(date__month=date.today().month,
-                                 date__year=date.today().year)
-                         .aggregate(Sum('amount'))['amount__sum'] or 0)
-    current_month_income_list = income.filter(date__month=date.today().month
-                                              ,date__year=date.today().year)
-
-    income_data = {}
-
-    for item in current_month_income_list:
-        income_data[item.id] = {
-            'id': item.id,
-            'user': item.user,
-            'amount': item.amount,
-            'date': item.date,
-            'description': item.description
-        }
-
-    if request.method == 'POST':
-        form = IncomeForm(request.POST)
-        if form.is_valid():
-            income = form.save(commit=False)
-            income.user = request.user
-            income.save()
-
-            notify_other_user(
-                added_by_username=request.user.username,
-                amount=income.amount,
-                category="Income",
-                description=income.description
-            )
-
-            return redirect('add_income')
-    else:
-        form = IncomeForm()
-
-    context = {
-        'form': form,
-        'current_month': date.today().strftime("%B"),
-        'current_month_income_amount': current_month_income_amount,
-        'income_data': income_data,
-
-    }
-    return render(request, 'expenses/add_income.html', context)
-
-
-@login_required
-def edit_income(request, id):
-    income = get_object_or_404(Income, id=id, user=request.user)
-    if request.method == 'POST':
-        form = IncomeForm(request.POST, instance=income)
-        if form.is_valid():
-            form.save()
-            return redirect('add_income')
-    else:
-        form = IncomeForm(instance=income)
-
-    return render(request, 'expenses/edit_income.html', {'form': form, 'item': income})
-
-
-@login_required
-def delete_income(request, id):
-    income = get_object_or_404(Income, id=id, user=request.user)
-    if request.method == 'POST':
-        income.delete()
-        return redirect('income_list')
-    return render(request, 'expenses/delete_income.html', {'item': income})
-
-
-@login_required
-def list_deposit(request):
-    deposit = Deposit.objects.select_related('user').all()
-
-    deposit_data = {}
-
-    for item in deposit:
-        deposit_data[item.id] = {
-            'id': item.id,
-            'user': item.user,
-            'amount': item.amount,
-            'date': item.date,
-            'description': item.description
-        }
-
-    context = {
-        'deposit_data': deposit_data,
-    }
-    return render(request, 'expenses/deposit_list.html', context)
-
-
-@login_required
-def add_deposit(request):
-    deposit = Deposit.objects.select_related('user').all()
-    current_month_deposit_amount = (deposit
-                         .filter(date__month=date.today().month,
-                                 date__year=date.today().year)
-                         .aggregate(Sum('amount'))['amount__sum'] or 0)
-    current_month_deposit_list = deposit.filter(date__month=date.today().month,
-                                                date__year=date.today().year)
-
-    deposit_data = {}
-
-    for item in current_month_deposit_list:
-        deposit_data[item.id] = {
-            'id': item.id,
-            'user': item.user,
-            'amount': item.amount,
-            'date': item.date,
-            'description': item.description
-        }
-
-    if request.method == 'POST':
-        form = DepositForm(request.POST)
-        if form.is_valid():
-            deposit = form.save(commit=False)
-            deposit.user = request.user
-            deposit.save()
-
-            notify_other_user(
-                added_by_username=request.user.username,
-                amount=deposit.amount,
-                category="Deposit",
-                description=deposit.description
-            )
-
-            return redirect('add_deposit')
-    else:
-        form = DepositForm()
-
-    context = {
-        'form': form,
-        'current_month': date.today().strftime("%B"),
-        'current_month_deposit_amount': current_month_deposit_amount,
-        'deposit_data': deposit_data,
-    }
-    return render(request, 'expenses/add_deposit.html', context)
-
-
-@login_required
-def edit_deposit(request, id):
-    deposit_item = get_object_or_404(Deposit, id=id, user=request.user)
-    if request.method == 'POST':
-        form = DepositForm(request.POST, instance=deposit_item)
-        if form.is_valid():
-            form.save()
-            return redirect('add_deposit')
-    else:
-        form = DepositForm(instance=deposit_item)
-    return render(request, 'expenses/edit_deposit.html', {'form': form, 'item': deposit_item})
-
-
-@login_required
-def delete_deposit(request, id):
-    deposit_item = get_object_or_404(Deposit, id=id, user=request.user)
-
-    if request.method == 'POST':
-        deposit_item.delete()
-        return redirect('add_deposit')
-
-    return render(request, 'expenses/delete_deposit.html', {'item': deposit_item})
-
 
 @login_required
 def export_expense_csv(request):
@@ -476,38 +288,3 @@ def export_expense_csv(request):
         writer.writerow([e.date, e.user.username, e.get_category_display(), e.amount, e.description])
 
     return response
-
-
-@login_required
-def export_all_csv(request):
-    response = HttpResponse(content_type='text/csv')
-    filename = f"budget_export_{datetime.today().strftime('%Y-%m-%d')}.csv"
-    response['Content-Disposition'] = f'attachment; filename="{filename}"'
-
-    writer = csv.writer(response)
-
-    # --- INCOME ---
-    writer.writerow(['--- INCOME ---'])
-    writer.writerow(['Date', 'User', 'Amount', 'Description'])
-    for i in Income.objects.filter(user=request.user,date__month=datetime.today().month, date__year=datetime.today().year).order_by('date'):
-        writer.writerow([i.date, i.user.username, i.amount, i.description])
-
-    writer.writerow([])  # blank spacer row
-
-    # --- DEPOSITS ---
-    writer.writerow(['--- DEPOSITS ---'])
-    writer.writerow(['Date', 'User', 'Amount', 'Description'])
-    for d in Deposit.objects.filter(user=request.user,date__month=datetime.today().month, date__year=datetime.today().year).order_by('date'):
-        writer.writerow([d.date, d.user.username, d.amount, d.description])
-
-    writer.writerow([])  # blank spacer row
-
-    # --- EXPENSES ---
-    writer.writerow(['--- EXPENSES ---'])
-    writer.writerow(['Date', 'User', 'Category', 'Amount', 'Description'])
-    for e in Expense.objects.filter(user=request.user,date__month=datetime.today().month, date__year=datetime.today().year).order_by('date'):
-        writer.writerow([e.date, e.user.username, e.get_category_display(), e.amount, e.description])
-
-    return response
-
-
