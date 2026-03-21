@@ -28,7 +28,7 @@ def list_income(request):
     context = {
         'income_data': income_data,
     }
-    return render(request, 'expenses/income_list.html', context)
+    return render(request, 'income/income_list.html', context)
 
 
 @login_required
@@ -78,7 +78,7 @@ def add_income(request):
         'income_data': income_data,
 
     }
-    return render(request, 'expenses/add_income.html', context)
+    return render(request, 'income/add_income.html', context)
 
 
 @login_required
@@ -92,7 +92,7 @@ def edit_income(request, id):
     else:
         form = IncomeForm(instance=income)
 
-    return render(request, 'expenses/edit_income.html', {'form': form, 'item': income})
+    return render(request, 'income/edit_income.html', {'form': form, 'item': income})
 
 
 @login_required
@@ -101,4 +101,4 @@ def delete_income(request, id):
     if request.method == 'POST':
         income.delete()
         return redirect('income_list')
-    return render(request, 'expenses/delete_income.html', {'item': income})
+    return render(request, 'income/delete_income.html', {'item': income})

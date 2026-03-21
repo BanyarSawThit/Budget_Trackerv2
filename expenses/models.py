@@ -76,8 +76,10 @@ class Deposit(models.Model):
 
 class ShoppingItem(models.Model):
     item =  models.CharField(max_length=100)
-    is_done = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['-created_at']
+
+    def __str__(self):
+        return self.item

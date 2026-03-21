@@ -1,6 +1,7 @@
 from django import forms
 
-from .models import Expense, Income, Deposit
+from .models import Expense, Income, Deposit, ShoppingItem
+
 
 class ExpenseForm(forms.ModelForm):
     class Meta:
@@ -64,3 +65,15 @@ class DepositForm(forms.ModelForm):
         if amount <= 0:
             raise forms.ValidationError("Amount must be greater than 0")
         return amount
+
+class ShoppingForm(forms.ModelForm):
+    class Meta:
+        model = ShoppingItem
+        fields = ['item']
+        widgets = {
+            'item': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 1,
+                'placeholder': 'Item',
+            }),
+        }

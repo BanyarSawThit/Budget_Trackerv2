@@ -1,35 +1,39 @@
 <!--template/partials/headers.html-->
 
 <header class="shadow-sm">
-  <span class="appname">BudgetApp</span>
-  <div class="d-flex gap-2">
+    <span class="appname">BudgetApp</span>
+    <div class="d-flex gap-2">
 
-    <!-- Shopping List Button -->
-    <div class="dropdown">
-    <button class="header-btn position-relative" data-bs-toggle="dropdown" aria-expanded="false">
-      <i class="bi bi-cart"></i>
-    </button>
-      <ul class="dropdown-menu dropdown-menu-end">
-        <li class="dropdown-header">Items</li>
-        <li class="dropdown-item-text">Items</li>
-        <li class="dropdown-item-text">Items</li>
-        <li class="dropdown-item-text">Items</li>
-        <li><hr class="dropdown-divider"></li>
-        <li><a class="dropdown-item text-center" href="#"><small>Shopping List -></small></small></a></li>
-      </ul>
+        <!-- Shopping List Button -->
+        <div class="dropdown">
+            <button class="header-btn position-relative" data-bs-toggle="dropdown" aria-expanded="false">
+                {% if shopping_count == 0 %}
+                <i class="bi bi-cart"></i>
+                {% else %}
+                <span class="badge">{{ shopping.count }}</span>
+                {% endif %}
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-header text-center" href="{% url 'shopping_pageF' %}"><small>Shopping List > </small></a></li>
+                {% for item in shopping %}
+                <li class="dropdown-item-text">{{ item.item }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Currency Button -->
+        <div class="dropdown">
+            <button class="header-btn" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-currency-exchange"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="#">THB</a></li>
+                <li><a class="dropdown-item" href="#">USD</a></li>
+                <li><a class="dropdown-item" href="#">MMK</a></li>
+            </ul>
+        </div>
+
+
     </div>
-
-    <!-- Currency Button -->
-    <div class="dropdown">
-      <button class="header-btn" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="bi bi-currency-exchange"></i>
-      </button>
-        <ul class="dropdown-menu dropdown-menu-end">
-          <li><a class="dropdown-item" href="#">THB</a></li>
-          <li><a class="dropdown-item" href="#">USD</a></li>
-          <li><a class="dropdown-item" href="#">MMK</a></li>
-        </ul>
-    </div>
-
-  </div>
 </header>

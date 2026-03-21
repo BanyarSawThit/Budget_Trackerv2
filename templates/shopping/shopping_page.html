@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-3">
+
+    <!-- ROW 1: Current Month Income Table -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card card-deposit shadow">
+                <div class="card-header text-center">
+                    <strong>Shopping List</strong>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-deposit">
+                            <tbody>
+                            {% for item in shopping_list %}
+                                <tr>
+                                    <td class="fw-bold">{{ item.item }}</td>
+                                    <td class="text-end">
+                                        <form method="post">
+
+                                            {% csrf_token %}
+                                            <input type="hidden" name="action" value="delete">
+                                            <input type="hidden" name="item_id" value="{{ item.id }}">
+
+                                            <button class="btn btn">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-3"><i class="bi bi-cart"></i> No item!</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 2: Add income form -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card card-deposit shadow">
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="add">
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-deposit btn-lg w-100">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

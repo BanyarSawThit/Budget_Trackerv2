@@ -14,3 +14,8 @@ class IncomeAdmin(admin.ModelAdmin):
 @admin.register(models.Deposit)
 class DepositAdmin(admin.ModelAdmin):
     list_display = ['date', 'user', 'amount',  'description']
+
+@admin.register(models.ShoppingItem)
+class ShoppingAdmin(admin.ModelAdmin):
+    list_display = ['item']
+

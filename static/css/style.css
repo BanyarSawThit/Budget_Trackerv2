@@ -203,7 +203,7 @@ body {
 }
 
 .table-deposit tbody tr:nth-child(even) {
-    background-color: rgba(66, 165, 245, 0.3) !important;
+    background-color: rgba(66, 165, 245, 0.2) !important;
 }
 
 .table-deposit tbody tr td {
@@ -376,8 +376,8 @@ header {
     height: 38px;
     border-radius: 10px;
     border: 1px solid rgba(127, 113, 191, 0.3);
-    background: rgba(184, 184, 255, 0.15);
-    color: var(--budget-primary);
+    background: var(--budget-primary);
+    color: white;
     font-size: 18px;
     display: flex;
     align-items: center;
@@ -393,4 +393,11 @@ header {
 
 .dropdown-item:hover {
     background: var(--budget-light);
+}
+
+/* Bigger checkbox */
+.form-check-input {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
 }

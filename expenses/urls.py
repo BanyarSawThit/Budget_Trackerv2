@@ -28,8 +28,6 @@ urlpatterns = [
     path('export/expenses', expense.export_expense_csv, name='expose_expense'),
 
     # shopping list
-    path('shopping_add/', shopping.shopping_add, name='shopping_add'),
-    path('shopping_edit/<int:id>/', shopping.shopping_edit, name='shopping_add'),
-    path('shopping_delete/<int:id>/', shopping.shopping_delete, name='shopping_add'),
+    path('shopping/', shopping.shopping_view, name='shopping_page'),
 
 ]

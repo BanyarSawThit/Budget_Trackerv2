@@ -27,7 +27,7 @@ def list_deposit(request):
     context = {
         'deposit_data': deposit_data,
     }
-    return render(request, 'expenses/deposit_list.html', context)
+    return render(request, 'deposit/deposit_list.html', context)
 
 
 @login_required
@@ -75,7 +75,7 @@ def add_deposit(request):
         'current_month_deposit_amount': current_month_deposit_amount,
         'deposit_data': deposit_data,
     }
-    return render(request, 'expenses/add_deposit.html', context)
+    return render(request, 'deposit/add_deposit.html', context)
 
 
 @login_required
@@ -88,7 +88,7 @@ def edit_deposit(request, id):
             return redirect('add_deposit')
     else:
         form = DepositForm(instance=deposit_item)
-    return render(request, 'expenses/edit_deposit.html', {'form': form, 'item': deposit_item})
+    return render(request, 'deposit/edit_deposit.html', {'form': form, 'item': deposit_item})
 
 
 @login_required
@@ -99,4 +99,4 @@ def delete_deposit(request, id):
         deposit_item.delete()
         return redirect('add_deposit')
 
-    return render(request, 'expenses/delete_deposit.html', {'item': deposit_item})
+    return render(request, 'deposit/delete_deposit.html', {'item': deposit_item})

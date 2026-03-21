@@ -4,7 +4,7 @@
 <div class="container mt-3">
     <div class="row mb-3">
         <div class="col-12">
-            <div class="card card-budget shadow">
+            <div class="card card-income shadow">
 
                 <div class="card-header text-center">
                     <strong>All Income</strong>
@@ -12,7 +12,7 @@
 
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-budget">
+                        <table class="table table-income">
                             <tbody>
                             {% for item in income_data.values %}
                                 <tr>
@@ -27,7 +27,7 @@
                                 </tr>
                             {% empty %}
                                 <tr>
-                                    <td colspan="5" class="text-center text-muted py-3">No budgets yet</td>
+                                    <td colspan="5" class="text-center text-muted py-3">No incomes yet</td>
                                 </tr>
                             {% endfor %}
                             </tbody>
@@ -41,12 +41,12 @@
     <!-- Navigation Buttons -->
     <div class="row mb-5">
         <div class="col-6">
-            <a href="{% url 'add_income' %}" class="btn btn-primary w-100">
+            <a href="{% url 'add_income' %}" class="btn btn-income w-100">
                 + Add Income
             </a>
         </div>
         <div class="col-6">
-            <a href="{% url 'summary' %}" class="btn btn-secondary w-100">
+            <a href="{% url 'summary' %}" class="btn btn-primary w-100">
                 Back to Summary
             </a>
         </div>
