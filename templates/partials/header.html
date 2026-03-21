@@ -15,7 +15,7 @@
             </button>
 
             <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-header text-center" href="{% url 'shopping_pageF' %}"><small>Shopping List > </small></a></li>
+                <li><a class="dropdown-header text-center" href="{% url 'shopping_page' %}"><small>Shopping List > </small></a></li>
                 {% for item in shopping %}
                 <li class="dropdown-item-text">{{ item.item }}</li>
                 {% endfor %}
