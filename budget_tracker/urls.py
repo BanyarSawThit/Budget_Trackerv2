@@ -24,4 +24,5 @@ urlpatterns = [
     path('accounts/login/', views.LoginView.as_view(), name='login'),
     path('accounts/logout/', views.LogoutView.as_view(), name='logout'),
     path('', include("expenses.urls")),
+    path('currency/', include("currency.urls")),
 ]

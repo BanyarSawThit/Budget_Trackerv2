@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load currency_filter %}
 
 {% block content %}
 
@@ -11,7 +12,7 @@
             <div class="card card-budget shadow">
                 <div class="card-body text-center">
                     <small class="card-text text-muted">Today</small>
-                    <h3 class="card-title text-value">{{ today_total }}</h3>
+                    <h3 class="card-title text-value">{{ today_total|convert:rate }}</h3>
                 </div>
             </div>
         </div>
@@ -21,7 +22,7 @@
             <div class="card card-budget shadow">
                 <div class="card-body text-center">
                     <small class="card-text text-muted">This Month</small>
-                    <h3 class="card-title text-value">{{ monthly_total }}</h3>
+                    <h3 class="card-title text-value">{{ monthly_total|convert:rate }}</h3>
                 </div>
             </div>
         </div>
@@ -62,7 +63,7 @@
                                     <small class="text-muted">{{ item.get_category_display }}</small>
                                 </td>
                                 <td >
-                                    <div class="fw-bold">{{ item.amount|floatformat:0 }}</div>
+                                    <div class="fw-bold">{{ item.amount|convert:rate }}</div>
                                     <small class="text-muted">{{ item.description }}</small>
                                 </td>
                             </tr>

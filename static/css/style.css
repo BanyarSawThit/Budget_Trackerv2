@@ -342,6 +342,12 @@ footer .nav-link.active {
     margin: 0;
 }
 
+.text-value-card-sm {
+    font-size: 1.55rem;
+    font-weight: 500;
+    margin: 0;
+}
+
 .text-label {
     font-size: 0.875rem;
     opacity: 0.8;
@@ -375,10 +381,24 @@ header {
     width: 38px;
     height: 38px;
     border-radius: 10px;
-    border: 1px solid rgba(127, 113, 191, 0.3);
+    border: 1px solid var(--bg-page);
     background: var(--budget-primary);
     color: white;
     font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.header-btn-rate {
+    width: 120px;
+    height: 38px;
+    border-radius: 10px;
+    background: var(--budget-primary);
+    color: white;
+    font-size: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -393,11 +413,4 @@ header {
 
 .dropdown-item:hover {
     background: var(--budget-light);
-}
-
-/* Bigger checkbox */
-.form-check-input {
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
 }

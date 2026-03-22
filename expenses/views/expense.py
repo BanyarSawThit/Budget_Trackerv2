@@ -1,4 +1,5 @@
 import csv
+from importlib.resources import open_text
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
@@ -266,7 +267,6 @@ def summary(request):
         'user2_name': other_user.username,
     }
     return render(request, 'expenses/user_summary.html', context)
-
 
 
 @login_required

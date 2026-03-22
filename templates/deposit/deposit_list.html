@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load currency_filter %}
 
 {% block content %}
 <div class="container mt-3">
@@ -19,7 +20,7 @@
                                     <td>{{ item.date }}</td>
                                     <td>{{ item.user.username }}</td>
                                     <td>{{ item.description|default:"-" }}</td>
-                                    <td class="text-end fw-semibold">{{ item.amount|floatformat:0 }}</td>
+                                    <td class="text-end fw-semibold">{{ item.amount|convert:rate }}</td>
                                     <td class="text-center">
                                         <a href="{% url 'edit_deposit' item.id %}" class="btn btn-sm btn-warning">Edit</a>
                                         <a href="{% url 'delete_deposit' item.id %}" class="btn btn-sm btn-danger">Delete</a>

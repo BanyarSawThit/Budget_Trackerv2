@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load currency_filter %}
 {% block content %}
 
 <div class="container mt-3">
@@ -14,8 +14,8 @@
                 <div class="card-body">
                     <div class="row text-center">
                         <div class="col-12">
-                            <h3 class="text-value">{{ monthly_budget_left|floatformat:0 }}</h3>
-                            <small class="text-muted">of {{ monthly_budget|floatformat:0 }}</small>
+                            <h3 class="text-value">{{ monthly_budget_left|convert:rate }}</h3>
+                            <small class="text-muted">of {{ monthly_budget|convert:rate }}</small>
                         </div>
                     </div>
                 </div>
@@ -38,8 +38,8 @@
                             <small class="fw-semibold">Budget</small>
                         </div>
                         <div class="card-body text-center py-3">
-                            <h4 class="text-value mb-1">{{ user1_stats.left|floatformat:0 }}</h4>
-                            <small class="text-muted">of {{ user1_stats.budget|floatformat:0 }}</small>
+                            <h4 class="text-value-card-sm mb-1">{{ user1_stats.left|convert:rate }}</h4>
+                            <small class="text-muted">of {{ user1_stats.budget|convert:rate }}</small>
                         </div>
                     </div>
 
@@ -49,7 +49,7 @@
                             <small class="fw-semibold">Spending</small>
                         </div>
                         <div class="card-body text-center py-3">
-                            <h4 class="text-value mb-0">{{ user1_stats.for_self|floatformat:0 }}</h4>
+                            <h4 class="text-value-card-sm mb-0">{{ user1_stats.for_self|convert:rate }}</h4>
                         </div>
                     </div>
 
@@ -58,7 +58,7 @@
                             <small class="fw-semibold">Income</small>
                         </div>
                         <div class="card-body text-center py-3">
-                            <h4 class="text-value mb-0">{{ user1_stats.income|floatformat:0 }}</h4>
+                            <h4 class="text-value-card-sm mb-0">{{ user1_stats.income|convert:rate }}</h4>
                         </div>
                     </div>
 
@@ -79,8 +79,8 @@
                             <small class="fw-semibold">Budget</small>
                         </div>
                         <div class="card-body text-center py-3">
-                            <h4 class="text-value mb-1">{{ user2_stats.left|floatformat:0 }}</h4>
-                            <small class="text-muted">of {{ user2_stats.budget|floatformat:0 }}</small>
+                            <h4 class="text-value-card-sm mb-1">{{ user2_stats.left|convert:rate }}</h4>
+                            <small class="text-muted">of {{ user2_stats.budget|convert:rate }}</small>
                         </div>
                     </div>
 
@@ -90,7 +90,7 @@
                             <small class="fw-semibold">Spending</small>
                         </div>
                         <div class="card-body text-center py-3">
-                            <h4 class="text-value mb-0">{{ user2_stats.for_self|floatformat:0 }}</h4>
+                            <h4 class="text-value-card-sm mb-0">{{ user2_stats.for_self|convert:rate }}</h4>
                         </div>
                     </div>
 
@@ -99,7 +99,7 @@
                             <small class="fw-semibold">Income</small>
                         </div>
                         <div class="card-body text-center py-3">
-                            <h4 class="text-value mb-0">{{ user2_stats.income|floatformat:0 }}</h4>
+                            <h4 class="text-value-card-sm mb-0">{{ user2_stats.income|convert:rate }}</h4>
                         </div>
                     </div>
 
@@ -118,8 +118,8 @@
                 <div class="card-body">
                     <div class="row text-center">
                         <div class="col-12">
-                            <h3 class="text-value">{{ remaining_deposit|floatformat:0 }}</h3>
-                            <small class="text-muted">of {{ monthly_deposit|floatformat:0 }}</small>
+                            <h3 class="text-value">{{ remaining_deposit|convert:rate }}</h3>
+                            <small class="text-muted">of {{ monthly_deposit|convert:rate }}</small>
                         </div>
                     </div>
                 </div>
@@ -139,21 +139,21 @@
                         <tbody>
                             <tr>
                                 <td>Food</td>
-                                <td class="text-end fw-semibold">{{ shared_food|floatformat:0 }}</td>
+                                <td class="text-end fw-semibold">{{ shared_food|convert:rate }}</td>
                             </tr>
                             <tr>
                                 <td>Grocery</td>
-                                <td class="text-end fw-semibold">{{ shared_grocery|floatformat:0 }}</td>
+                                <td class="text-end fw-semibold">{{ shared_grocery|convert:rate }}</td>
                             </tr>
                             <tr>
                                 <td>Utility</td>
-                                <td class="text-end fw-semibold">{{ shared_utility|floatformat:0 }}</td>
+                                <td class="text-end fw-semibold">{{ shared_utility|convert:rate }}</td>
                             </tr>
                         </tbody>
                         <tfoot>
                             <tr>
                                 <td class="fw-bold">Total Spent</td>
-                                <td class="text-end fw-bold">{{ shared_monthly_total|floatformat:0 }}</td>
+                                <td class="text-end fw-bold">{{ shared_monthly_total|convert:rate }}</td>
                             </tr>
                         </tfoot>
                     </table>

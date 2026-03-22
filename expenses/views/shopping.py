@@ -24,7 +24,7 @@ def shopping_view(request):
             if form.is_valid():
                 form.save()
 
-            return redirect('shopping')
+            return redirect('shopping_page')
         elif action == 'delete':
             item_id = request.POST.get('item_id')
             shopping_item = get_object_or_404(ShoppingItem, id=item_id)

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load currency_filter %}
 
 {% block content %}
 
@@ -15,7 +16,7 @@
                     <div class="row text-center">
                         <div class="col-12">
                             <p class="text-label">This month ({{ current_month }})</p>
-                            <h3 class="text-value">{{ current_month_income_amount|floatformat:0 }}</h3>
+                            <h3 class="text-value">{{ current_month_income_amount|convert:rate }}</h3>
                         </div>
                     </div>
                 </div>
@@ -57,7 +58,7 @@
                                     <td>{{ item.date }}</td>
                                     <td>{{ item.user.username }}</td>
                                     <td>{{ item.description|default:"-" }}</td>
-                                    <td class="text-end fw-semibold">{{ item.amount|floatformat:0 }}</td>
+                                    <td class="text-end fw-semibold">{{ item.amount|convert:rate }}</td>
                                 </tr>
                             {% empty %}
                                 <tr>

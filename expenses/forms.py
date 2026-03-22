@@ -70,10 +70,13 @@ class ShoppingForm(forms.ModelForm):
     class Meta:
         model = ShoppingItem
         fields = ['item']
+        labels = {
+            'item': ''
+        }
         widgets = {
             'item': forms.Textarea(attrs={
                 'class': 'form-control',
-                'rows': 1,
-                'placeholder': 'Item',
+                'rows': 5,
+                'placeholder': '1. ...\n2. ...',
             }),
         }
