@@ -3,11 +3,14 @@
 <header class="shadow-sm">
     <span class="appname">BudgetApp</span>
 
-    <div>
+    {% if selected_currency == 'MMK' %}
+        <div>
         <button class="header-btn-rate">
             <span>128 MMK</span>
         </button>
-    </div>
+        </div>
+    {% endif %}
+
     <div class="d-flex gap-2">
 
         <!-- Shopping List Button -->
