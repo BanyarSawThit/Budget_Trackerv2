@@ -53,12 +53,22 @@
                         </div>
                     </div>
 
-                    <div class="card card-income shadow-sm">
+                    <div class="card card-income shadow-sm mb-2">
                         <div class="card-header text-center py-2">
                             <small class="fw-semibold">Income</small>
                         </div>
                         <div class="card-body text-center py-3">
                             <h4 class="text-value-card-sm mb-0">{{ user1_stats.income|convert:rate }}</h4>
+                        </div>
+                    </div>
+
+                    <!-- User 1 deposit card -->
+                    <div class="card card-deposit shadow-sm mb-2">
+                        <div class="card-header text-center py-2">
+                            <small class="fw-semibold">Deposit</small>
+                        </div>
+                        <div class="card-body text-center py-3">
+                            <h4 class="text-value-card-sm mb-0">{{ user1_stats.deposit|convert:rate }}</h4>
                         </div>
                     </div>
 
@@ -94,12 +104,21 @@
                         </div>
                     </div>
 
-                    <div class="card card-income shadow-sm">
+                    <div class="card card-income shadow-sm mb-2">
                         <div class="card-header text-center py-2">
                             <small class="fw-semibold">Income</small>
                         </div>
                         <div class="card-body text-center py-3">
                             <h4 class="text-value-card-sm mb-0">{{ user2_stats.income|convert:rate }}</h4>
+                        </div>
+                    </div>
+
+                    <div class="card card-deposit shadow-sm mb-2">
+                        <div class="card-header text-center py-2">
+                            <small class="fw-semibold">Deposit</small>
+                        </div>
+                        <div class="card-body text-center py-3">
+                            <h4 class="text-value-card-sm mb-0">{{ user2_stats.deposit|convert:rate }}</h4>
                         </div>
                     </div>
 
