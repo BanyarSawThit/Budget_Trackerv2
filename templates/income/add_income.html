@@ -10,12 +10,11 @@
         <div class="col-12">
             <div class="card card-income shadow">
                 <div class="card-header text-center">
-                    <strong>Income</strong>
+                    <strong>{{ current_month }} Income Total</strong>
                 </div>
                 <div class="card-body">
                     <div class="row text-center">
                         <div class="col-12">
-                            <p class="text-label">This month ({{ current_month }})</p>
                             <h3 class="text-value">{{ current_month_income_amount|convert:rate }}</h3>
                         </div>
                     </div>
@@ -55,7 +54,7 @@
                             <tbody>
                             {% for item in income_data.values %}
                                 <tr>
-                                    <td>{{ item.date }}</td>
+                                    <td>{{ item.date|date:"d" }}</td>
                                     <td>{{ item.user.username }}</td>
                                     <td>{{ item.description|default:"-" }}</td>
                                     <td class="text-end fw-semibold">{{ item.amount|convert:rate }}</td>

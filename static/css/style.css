@@ -116,6 +116,7 @@ body {
 /* Reduce table padding on mobile */
 @media (max-width: 768px) {
     .table-budget tbody tr td,
+    .table-spending tbody tr td,
     .table-deposit tbody tr td {
         padding: 0.5rem 0.5rem !important;  /* Reduced from 0.75rem 1rem */
         font-size: 0.875rem;  /* Slightly smaller font */
@@ -123,6 +124,7 @@ body {
 
     /* Make action buttons smaller on mobile */
     .table-budget .btn-sm,
+    .table-spending .btn-sm,
     .table-deposit .btn-sm {
         font-size: 0.75rem;
         padding: 0.25rem 0.5rem;
@@ -134,6 +136,12 @@ body {
 .table-scroll {
     max-height: 150px;
     overflow-y: auto;
+}
+
+.table th {
+    background-color: transparent !important;
+    margin-bottom: 0;
+    border-bottom: none;
 }
 
 /* Budget Table Styles */

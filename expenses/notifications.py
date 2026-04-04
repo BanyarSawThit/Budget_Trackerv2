@@ -13,10 +13,10 @@ def send_telegram(chat_id, message):
         'parse_mode': 'HTML'
     })
 
-def notify_other_user(added_by_username, amount, category, description):
+def notify_user(added_by_username, amount, category, description, budget):
         msg = (
-            f"<b>{added_by_username}</b>  |  {category}  |  ฿ {amount}\n"
-            f"------------------------\n"
-            f"{description or '-'}"
+            f"<b>{added_by_username}'s</b> Budget: ฿{budget}\n"
+            f"{category}: ฿{amount}\n"
+            f"{description or '-'}\n"
         )
         send_telegram(GROUP_CHAT_ID, msg)

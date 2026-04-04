@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from datetime import date
@@ -5,9 +7,9 @@ from datetime import date
 from django.shortcuts import render, redirect, get_object_or_404
 
 from expenses.forms import IncomeForm
-from expenses.models import Income
+from expenses.models import Income, Deposit, Expense, SHARED_CATEGORIES
 
-from expenses.notifications import notify_other_user
+from expenses.notifications import notify_user
 
 
 @login_required
@@ -34,13 +36,27 @@ def list_income(request):
 @login_required
 def add_income(request):
 
-    income = Income.objects.select_related('user').all()
-    current_month_income_amount = (income
-                         .filter(date__month=date.today().month,
+    current_user = request.user
+    income_qs = Income.objects.select_related('user').all()
+    current_month_income_amount = (income_qs
+                         .filter(user=current_user,
+                                 date__month=date.today().month,
                                  date__year=date.today().year)
                          .aggregate(Sum('amount'))['amount__sum'] or 0)
-    current_month_income_list = income.filter(date__month=date.today().month
+    current_month_income_list = income_qs.filter(date__month=date.today().month
                                               ,date__year=date.today().year)
+
+    # GET USER BUDGET
+    income_amount = (Income.objects
+              .filter(user=current_user, date__month=date.today().month, date__year=date.today().year)
+              .aggregate(Sum('amount'))['amount__sum'] or 0)
+    deposit = (Deposit.objects
+               .filter(user=current_user, date__month=date.today().month, date__year=date.today().year)
+               .aggregate(Sum('amount'))['amount__sum'] or 0)
+    spent = (Expense.objects
+             .filter(user=current_user, date__month=date.today().month, date__year=date.today().year)
+             .exclude(category__in=SHARED_CATEGORIES)
+             .aggregate(Sum('amount'))['amount__sum'] or 0)
 
     income_data = {}
 
@@ -56,15 +72,19 @@ def add_income(request):
     if request.method == 'POST':
         form = IncomeForm(request.POST)
         if form.is_valid():
-            income = form.save(commit=False)
-            income.user = request.user
-            income.save()
+            new_income = form.save(commit=False)
+            new_income.user = current_user
+            new_income.save()
 
-            notify_other_user(
+            # User's budget left
+            budget = (income_amount + new_income.amount) - deposit - spent
+
+            notify_user(
                 added_by_username=request.user.username,
-                amount=income.amount,
+                amount=new_income.amount,
                 category="Income",
-                description=income.description
+                description=new_income.description,
+                budget=budget,
             )
 
             return redirect('add_income')

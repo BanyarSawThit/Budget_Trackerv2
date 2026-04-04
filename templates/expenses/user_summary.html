@@ -4,175 +4,157 @@
 
 <div class="container mt-3">
 
-    <!-- ROW 1: Total Budget Overview -->
+    <!-- ROW 1: Total Budget-->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card card-budget shadow">
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-12">
+                            <small class="text-muted">{{ selected_month_name }} Budget Left</small>
+                            <h3 class="text-value">{{ monthly_budget_left|convert:rate }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ROW 2: Month Selector -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="btn-group w-100 shadow" role="group">
+                {% for month_num in month_range %}
+                    <a
+                            href="?month={{ month_num }}"
+                            class="btn btn-sm
+                            {% if month_num == selected_month %}
+                                btn-light
+                            {% else %}
+                                btn-primary
+                            {% endif %}">
+                        {{ month_num }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- ROW 3: Quick Stats Cards -->
+    <div class="row mb-3">
+        <!-- Personal Expenses Card -->
+        <div class="col-6">
+            <div class="card card-budget shadow">
+                <div class="card-body text-center py-3">
+                    <small class="card-text text-muted mb-1">My Budget</small>
+                    <h3 class="card-title text-value">{{ current_user_stats.stats.left|convert:rate }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shared Expenses Card -->
+        <div class="col-6">
+            <div class="card card-spending shadow">
+                <div class="card-body text-center">
+                    <small class="card-text text-muted mb-1">My Spending</small>
+                    <h3 class="card-title text-value">{{ current_user_stats.stats.for_self|convert:rate }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ROW 3: Budget/Spent Table -->
     <div class="row mb-3">
         <div class="col-12">
             <div class="card card-budget shadow">
                 <div class="card-header text-center">
-                    <strong>Total Budget</strong>
-                </div>
-                <div class="card-body">
-                    <div class="row text-center">
-                        <div class="col-12">
-                            <h3 class="text-value">{{ monthly_budget_left|convert:rate }}</h3>
-                            <small class="text-muted">of {{ monthly_budget|convert:rate }}</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ROW 2: Individual User Stats (Budget + Spending Combined) -->
-    <div class="row mb-3">
-        <!-- User 1 Column -->
-        <div class="col-6">
-            <div class="card card-user-wrapper shadow-sm">
-                <div class="card-header text-center bg-transparent border-0 pt-3">
-                    <h5 class="mb-0 fw-bold">{{ user1_name }}</h5>
-                </div>
-                <div class="card-body p-2">
-                    <!-- User 1 Budget Card -->
-                    <div class="card card-budget shadow-sm mb-2">
-                        <div class="card-header text-center py-2">
-                            <small class="fw-semibold">Budget</small>
-                        </div>
-                        <div class="card-body text-center py-3">
-                            <h4 class="text-value-card-sm mb-1">{{ user1_stats.left|convert:rate }}</h4>
-                            <small class="text-muted">of {{ user1_stats.budget|convert:rate }}</small>
-                        </div>
-                    </div>
-
-                    <!-- User 1 Income Card -->
-                    <div class="card card-spending shadow-sm mb-2">
-                        <div class="card-header text-center py-2">
-                            <small class="fw-semibold">Spending</small>
-                        </div>
-                        <div class="card-body text-center py-3">
-                            <h4 class="text-value-card-sm mb-0">{{ user1_stats.for_self|convert:rate }}</h4>
-                        </div>
-                    </div>
-
-                    <div class="card card-income shadow-sm mb-2">
-                        <div class="card-header text-center py-2">
-                            <small class="fw-semibold">Income</small>
-                        </div>
-                        <div class="card-body text-center py-3">
-                            <h4 class="text-value-card-sm mb-0">{{ user1_stats.income|convert:rate }}</h4>
-                        </div>
-                    </div>
-
-                    <!-- User 1 deposit card -->
-                    <div class="card card-deposit shadow-sm mb-2">
-                        <div class="card-header text-center py-2">
-                            <small class="fw-semibold">Deposit</small>
-                        </div>
-                        <div class="card-body text-center py-3">
-                            <h4 class="text-value-card-sm mb-0">{{ user1_stats.deposit|convert:rate }}</h4>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-        <!-- User 2 Column -->
-        <div class="col-6">
-            <div class="card card-user-wrapper shadow-sm">
-                <div class="card-header text-center bg-transparent border-0 pt-3">
-                    <h5 class="mb-0 fw-bold">{{ user2_name }}</h5>
-                </div>
-                <div class="card-body p-2">
-                    <!-- User 2 Budget Card -->
-                    <div class="card card-budget shadow-sm mb-2">
-                        <div class="card-header text-center py-2">
-                            <small class="fw-semibold">Budget</small>
-                        </div>
-                        <div class="card-body text-center py-3">
-                            <h4 class="text-value-card-sm mb-1">{{ user2_stats.left|convert:rate }}</h4>
-                            <small class="text-muted">of {{ user2_stats.budget|convert:rate }}</small>
-                        </div>
-                    </div>
-
-                    <!-- User 2 Spending Card -->
-                    <div class="card card-spending shadow-sm mb-2">
-                        <div class="card-header text-center py-2">
-                            <small class="fw-semibold">Spending</small>
-                        </div>
-                        <div class="card-body text-center py-3">
-                            <h4 class="text-value-card-sm mb-0">{{ user2_stats.for_self|convert:rate }}</h4>
-                        </div>
-                    </div>
-
-                    <div class="card card-income shadow-sm mb-2">
-                        <div class="card-header text-center py-2">
-                            <small class="fw-semibold">Income</small>
-                        </div>
-                        <div class="card-body text-center py-3">
-                            <h4 class="text-value-card-sm mb-0">{{ user2_stats.income|convert:rate }}</h4>
-                        </div>
-                    </div>
-
-                    <div class="card card-deposit shadow-sm mb-2">
-                        <div class="card-header text-center py-2">
-                            <small class="fw-semibold">Deposit</small>
-                        </div>
-                        <div class="card-body text-center py-3">
-                            <h4 class="text-value-card-sm mb-0">{{ user2_stats.deposit|convert:rate }}</h4>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ROW 3: Deposit Pool Overview -->
-    <div class="row mb-3">
-        <div class="col-12">
-            <div class="card card-deposit shadow">
-                <div class="card-header text-center">
-                    <strong>Shared Deposit Pool</strong>
-                </div>
-                <div class="card-body">
-                    <div class="row text-center">
-                        <div class="col-12">
-                            <h3 class="text-value">{{ remaining_deposit|convert:rate }}</h3>
-                            <small class="text-muted">of {{ monthly_deposit|convert:rate }}</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ROW 4: Deposit Breakdown Table -->
-    <div class="row mb-3">
-        <div class="col-12">
-            <div class="card card-deposit shadow">
-                <div class="card-header text-center">
-                    <strong>Shared Expenses Breakdown</strong>
+                    <strong>Budget</strong>
                 </div>
                 <div class="card-body p-0">
-                    <table class="table table-deposit">
+                    <table class="table table-budget mb-0">
                         <tbody>
-                            <tr>
-                                <td>Food</td>
-                                <td class="text-end fw-semibold">{{ shared_food|convert:rate }}</td>
-                            </tr>
-                            <tr>
-                                <td>Grocery</td>
-                                <td class="text-end fw-semibold">{{ shared_grocery|convert:rate }}</td>
-                            </tr>
-                            <tr>
-                                <td>Utility</td>
-                                <td class="text-end fw-semibold">{{ shared_utility|convert:rate }}</td>
-                            </tr>
+                        <tr>
+                            <th><small>Name</small></th>
+                            <th class="text-end"><small>Left</small></th>
+                            <th class="text-end"><small>Spent</small></th>
+                        </tr>
+                        {% for item in user_stats %}
+                        <tr>
+                            <td>
+                                <div class="fw-semibold">{{ item.user.username }} <small>({{item.stats.budget|convert:rate}})</small></div>
+                            </td>
+                            <td>
+                                <div class="text-end">{{item.stats.left|convert:rate}}</div>
+                            </td>
+                            <td>
+                                <div class="text-end">{{item.stats.for_self|convert:rate}}</div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ROW 4: Deposit Left -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card card-deposit shadow">
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-12">
+                            <small class="text-muted">Deposit Left</small>
+                            <h3 class="text-value">{{ remaining_deposit|convert:rate }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ROW 5: Income/Deposit Table -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card card-deposit shadow">
+                <div class="card-header text-center">
+                    <strong>Income/Deposit</strong>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-deposit mb-0">
+                        <tbody>
+                        <tr>
+                            <th><small>Name</small></th>
+                            <th class="text-end"><small>Income</small></th>
+                            <th class="text-end"><small>Deposit</small></th>
+                        </tr>
+                        {% for item in user_stats %}
+                        <tr>
+                            <td>
+                                <div class="fw-semibold">{{ item.user.username }}</div>
+                            </td>
+                            <td>
+                                <div class="text-end">{{item.stats.income|convert:rate}}</div>
+                            </td>
+                            <td>
+                                <div class="text-end">{{item.stats.deposit|convert:rate}}</div>
+                            </td>
+                        </tr>
+                        {% endfor %}
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td class="fw-bold">Total Spent</td>
-                                <td class="text-end fw-bold">{{ shared_monthly_total|convert:rate }}</td>
+                                <td>
+                                    <div></div>
+                                </td>
+                                <td>
+                                    <div class="text-end fw-semibold">{{ monthly_budget|convert:rate }}</div>
+                                </td>
+                                <td>
+                                    <div class="text-end fw-semibold">{{ monthly_deposit|convert:rate }}</div>
+                                </td>
+
                             </tr>
                         </tfoot>
                     </table>
@@ -181,7 +163,7 @@
         </div>
     </div>
 
-    <!-- Action Buttons (Placeholder for Income/Deposit forms) -->
+    <!-- Action Buttons (Income/Deposit) -->
     <div class="row mb-5">
         <div class="col-4">
             <a href="{% url 'add_income' %}" class="btn btn-income w-100 shadow">
