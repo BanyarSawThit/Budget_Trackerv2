@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from expenses.forms import DepositForm
 from expenses.models import Deposit, Income, SHARED_CATEGORIES, Expense
 from expenses.notifications import notify_user
+from expenses.services import get_user_stats
 
 
 @login_required
@@ -43,18 +44,6 @@ def add_deposit(request):
     current_month_deposit_list = deposit_qs.filter(date__month=date.today().month,
                                                 date__year=date.today().year)
 
-    # GET USER BUDGET
-    income = (Income.objects
-              .filter(user=current_user, date__month=date.today().month, date__year=date.today().year)
-              .aggregate(Sum('amount'))['amount__sum'] or 0)
-    deposit_amount = (Deposit.objects
-               .filter(user=current_user, date__month=date.today().month, date__year=date.today().year)
-               .aggregate(Sum('amount'))['amount__sum'] or 0)
-    spent = (Expense.objects
-             .filter(user=current_user, date__month=date.today().month, date__year=date.today().year)
-             .exclude(category__in=SHARED_CATEGORIES)
-             .aggregate(Sum('amount'))['amount__sum'] or 0)
-
     deposit_data = {}
     for item in current_month_deposit_list:
         deposit_data[item.id] = {
@@ -72,14 +61,15 @@ def add_deposit(request):
             new_deposit.user = current_user
             new_deposit.save()
 
-            budget = income - (deposit_amount + new_deposit.amount) - spent
+            # Get user budget
+            user_stats = get_user_stats(current_user, date.today().month, date.today().year)
 
             notify_user(
                 added_by_username=current_user.username,
                 amount=new_deposit.amount,
                 category="Deposit",
                 description=new_deposit.description,
-                budget=budget,
+                budget=user_stats['budget_left'],
             )
 
             return redirect('add_deposit')

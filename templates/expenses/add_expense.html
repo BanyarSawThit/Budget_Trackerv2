@@ -7,25 +7,27 @@
 
     <!-- Row 1: Two cards for totals -->
     <div class="row mb-3">
-        <!-- Today's Total Card -->
+
+        <!-- My Budget Card -->
         <div class="col-6">
             <div class="card card-budget shadow">
+                <div class="card-header text-center text-label">My Budget</div>
                 <div class="card-body text-center">
-                    <small class="card-text text-muted">Today</small>
+                    <h3 class="card-title text-value">{{ user_budget_left|convert:rate }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Today's Spent Card -->
+        <div class="col-6">
+            <div class="card card-spending shadow">
+                <div class="card-header text-center text-label">Today Spent</div>
+                <div class="card-body text-center">
                     <h3 class="card-title text-value">{{ today_total|convert:rate }}</h3>
                 </div>
             </div>
         </div>
 
-        <!-- Monthly Total Card -->
-        <div class="col-6">
-            <div class="card card-budget shadow">
-                <div class="card-body text-center">
-                    <small class="card-text text-muted">This Month</small>
-                    <h3 class="card-title text-value">{{ monthly_total|convert:rate }}</h3>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- Row 2: Add expense form in a card -->

@@ -12,12 +12,13 @@ from expenses.forms import ExpenseForm
 from expenses.models import Expense, User, Income, SHARED_CATEGORIES, Deposit, CATEGORY_CHOICES
 
 from expenses.notifications import notify_user
+from expenses.services import get_user_stats
+
 
 @login_required
 def expense_list(request):
     month_range = range(1, 13)
     users = User.objects.all()
-    category_choices = CATEGORY_CHOICES
     current_year = date.today().year
     year_range = range(current_year - 2, current_year + 3)
 
@@ -27,17 +28,22 @@ def expense_list(request):
         except (TypeError, ValueError):
             return default
 
+    # Get selected month from session or default to current date and session save
     session_month = request.session.get("selected_month", date.today().month)
-
     selected_month = get_int(request.GET.get('month'), session_month)
-    request.session['selected_month'] = selected_month
+    request.session["selected_month"] = selected_month
+    selected_month_name = month_name[selected_month]
 
-    selected_year =  get_int(request.GET.get('year', date.today().year), date.today().year)
+    # Get selected year from session or default to current date and session save
+    session_year = request.session.get("selected_year", date.today().year)
+    selected_year = get_int(request.GET.get('year'), session_year)
+    request.session["selected_year"] = selected_year
+
     selected_user = get_int(request.GET.get('user'), 0)
     selected_category = request.GET.get('category', '')
     selected_search = request.GET.get('search', '')
 
-    selected_month_name = month_name[selected_month]
+
     expenses = (Expense.objects
                 .select_related('user')
                 .filter(date__month=selected_month,
@@ -47,7 +53,7 @@ def expense_list(request):
         expenses = expenses.filter(user_id=selected_user)
 
     top_cats = {}
-    for code, name in category_choices:
+    for code, name in CATEGORY_CHOICES:
         top_cats[name] = (expenses
                           .filter(category=code)
                           .aggregate(Sum('amount'))['amount__sum'] or 0)
@@ -74,7 +80,7 @@ def expense_list(request):
         'users': users,
         'selected_user': selected_user,
         'selected_category': selected_category,
-        'category_choices': category_choices,
+        'category_choices': CATEGORY_CHOICES,
         'top_cats': top_cats,
         'selected_search': selected_search,
 
@@ -95,31 +101,21 @@ def expense_list(request):
 
 @login_required
 def add_expense(request):
+
     """Add new expense and show today's summary"""
 
+    current_user = request.user
+
+    # User total budget before adding expense
+    user_stats = get_user_stats(current_user, date.today().month, date.today().year)
+
+    # today spent total
     today_total = (Expense.objects
                    .filter(date=date.today())
-                   .aggregate(Sum("amount")))['amount__sum'] or 0
+                   .aggregate(Sum("amount"))['amount__sum'] or 0)
 
-    monthly_total = (Expense.objects
-                     .filter(date__month=date.today().month, date__year=date.today().year)
-                     .exclude(category__in=SHARED_CATEGORIES)
-                     .aggregate(Sum("amount")))['amount__sum'] or 0
-
+    # today expense list
     today_list = Expense.objects.filter(date=date.today())
-
-    # GET USER BUDGET
-    current_user = request.user
-    income = (Income.objects
-              .filter(user=current_user, date__month=date.today().month, date__year=date.today().year)
-              .aggregate(Sum('amount'))['amount__sum'] or 0)
-    deposit = (Deposit.objects
-               .filter(user=current_user, date__month=date.today().month, date__year=date.today().year)
-               .aggregate(Sum('amount'))['amount__sum'] or 0)
-    spent = (Expense.objects
-             .filter(user=current_user, date__month=date.today().month, date__year=date.today().year)
-             .exclude(category__in=SHARED_CATEGORIES)
-             .aggregate(Sum('amount'))['amount__sum'] or 0)
 
     # ADD FORM
     if request.method == 'POST':
@@ -129,8 +125,10 @@ def add_expense(request):
             expense.user = current_user
             expense.save()
 
-            # User's budget left
-            budget = income - deposit - (spent+expense.amount)
+            if expense.category in SHARED_CATEGORIES:
+                budget = user_stats['budget_left']
+            else:
+                budget = user_stats['budget_left'] - expense.amount
 
             notify_user(
                 added_by_username=request.user.username,
@@ -147,7 +145,7 @@ def add_expense(request):
     context = {
         'form': form,
         'today_total': today_total,
-        'monthly_total': monthly_total,
+        'user_budget_left':user_stats['budget_left'],
         'today_list': today_list,
     }
     return render(request, 'expenses/add_expense.html', context)
@@ -183,42 +181,46 @@ def summary(request):
     month_range = range(1, 13)
     session_month = request.session.get("selected_month", date.today().month)
 
-    def getint(value, default):
+    def get_int(value, default):
         try:
             return int(value)
         except (TypeError, ValueError):
             return default
 
-    selected_month = getint(request.GET.get("month"), session_month)
-    request.session['selected_month'] = selected_month
+    # Get selected month from session or default to current date and session save
+    session_month = request.session.get("selected_month", date.today().month)
+    selected_month = get_int(request.GET.get('month'), session_month)
+    request.session["selected_month"] = selected_month
     selected_month_name = month_name[selected_month]
+
+    # Get selected year from session or default to current date and session save
+    session_year = request.session.get("selected_year", date.today().year)
+    selected_year = get_int(request.GET.get('year'), session_year)
+    request.session["selected_year"] = selected_year
 
     all_user = list(User.objects.all())
     user_stats_list = []
 
     # === OVERALL TOTALS ===
     monthly_income = (Income.objects
-                    .filter(date__month=selected_month,date__year=date.today().year)
+                    .filter(date__month=selected_month,date__year=selected_year)
                     .aggregate(Sum('amount'))['amount__sum'] or 0)
     monthly_deposit = (Deposit.objects
-                     .filter(date__month=selected_month,date__year=date.today().year)
+                     .filter(date__month=selected_month,date__year=selected_year)
                      .aggregate(Sum('amount'))['amount__sum'] or 0)
-    monthly_spent = (Expense.objects
-                   .filter(date__month=selected_month,date__year=date.today().year)
-                   .aggregate(Sum('amount'))['amount__sum'] or 0)
 
     # Budget = Income - Deposit (money set aside for shared expenses)
     monthly_budget = monthly_income - monthly_deposit
 
     # Remaining deposit = What's left in the shared pool
     shared_monthly_total = (Expense.objects
-                            .filter(category__in=SHARED_CATEGORIES, date__month=selected_month,date__year=date.today().year)
+                            .filter(category__in=SHARED_CATEGORIES, date__month=selected_month,date__year=selected_year)
                             .aggregate(Sum('amount'))['amount__sum'] or 0)
     remaining_deposit = monthly_deposit - shared_monthly_total
 
     # === PERSONAL SPENDING (non-shared) ===
     total_personal_spent = (Expense.objects
-                            .filter(date__month=selected_month,date__year=date.today().year)
+                            .filter(date__month=selected_month,date__year=selected_year)
                             .exclude(category__in=SHARED_CATEGORIES)
                             .aggregate(Sum('amount'))
                             ['amount__sum'] or 0)
@@ -226,49 +228,12 @@ def summary(request):
     # Total budget left = Budget minus personal spending
     monthly_budget_left = monthly_budget - total_personal_spent
 
-    # === USER STATISTICS ===
-    def get_user_stat(user):
-        income = (Income.objects
-                  .filter(user=user,date__month=selected_month,date__year=date.today().year)
-                  .aggregate(Sum('amount'))['amount__sum'] or 0)
-        deposit = (Deposit.objects
-                   .filter(user=user,date__month=selected_month,date__year=date.today().year)
-                   .aggregate(Sum('amount'))['amount__sum'] or 0)
-
-        # User's budget = their income minus their deposit
-        budget = income - deposit
-
-        # User's expenses
-        user_expenses = Expense.objects.filter(user=user
-                                               ,date__month=selected_month
-                                               ,date__year=date.today().year)
-        monthly_spent = user_expenses.aggregate(Sum('amount'))['amount__sum'] or 0
-
-        for_self = (user_expenses
-                    .exclude(category__in=SHARED_CATEGORIES)
-                    .aggregate(Sum('amount'))['amount__sum'] or 0
-                    )
-
-
-        left = budget - for_self
-
-        return {
-            'income' : income,
-            'deposit' : deposit,
-            'budget' : budget,
-            'monthly_spent' : monthly_spent,
-            'left' : left,
-            'for_self': for_self
-        }
-
     for user in all_user:
-        user_stats = get_user_stat(user)
+        user_stats = get_user_stats(user, selected_month, selected_year)
         user_stats_list.append({
             'user': user,
             'stats': user_stats,
         })
-
-    user_stats_list.sort(key=lambda x: x['stats']['left'], reverse=True)
 
     current_user_stats = next(
         (item for item in user_stats_list if item['user'] == request.user),
@@ -287,7 +252,6 @@ def summary(request):
         'monthly_income' : monthly_income,
         'monthly_deposit': monthly_deposit,
         'monthly_budget': monthly_budget,
-        'monthly_spent': monthly_spent,
         'monthly_budget_left': monthly_budget_left,
 
         # Deposit details

@@ -5,12 +5,12 @@
 
 <div class="container mt-3">
 
-    <!-- ROW 3: Total Expense Card -->
+    <!-- ROW 1: Total Expense Card -->
     <div class="row mb-3">
         <div class="col-12">
             <div class="card card-budget shadow">
+                <div class="card-header text-center"><strong>Total Spent</strong></div>
                 <div class="card-body text-center">
-                    <small class="card-text text-muted mb-1">{{ selected_month_name }} {{ selected_year }}</small>
                     <h3 class="card-title text-value">{{ month_total|convert:rate }}</h3>
                 </div>
 
@@ -87,7 +87,7 @@
             <div class="dropdown shadow">
                 {% if selected_user == 0 %}
                     <button class="btn btn-primary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Both
+                        All
                     </button>
                 {% else %}
                     {% for user in users %}
@@ -101,7 +101,7 @@
                 <ul class="dropdown-menu">
                     <li>
                         <a class="dropdown-item" href="?month={{ selected_month }}&year={{ selected_year }}&user=0 ">
-                            Both
+                            All
                         </a>
                     </li>
                     {% for user in users %}

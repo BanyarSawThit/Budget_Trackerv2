@@ -8,10 +8,10 @@
     <div class="row mb-3">
         <div class="col-12">
             <div class="card card-budget shadow">
+                <div class="card-header text-center"><strong>{{ selected_month_name }} Budget Left</strong></div>
                 <div class="card-body">
                     <div class="row text-center">
                         <div class="col-12">
-                            <small class="text-muted">{{ selected_month_name }} Budget Left</small>
                             <h3 class="text-value">{{ monthly_budget_left|convert:rate }}</h3>
                         </div>
                     </div>
@@ -45,9 +45,9 @@
         <!-- Personal Expenses Card -->
         <div class="col-6">
             <div class="card card-budget shadow">
+                <div class="card-header text-center text-label">My Budget</div>
                 <div class="card-body text-center py-3">
-                    <small class="card-text text-muted mb-1">My Budget</small>
-                    <h3 class="card-title text-value">{{ current_user_stats.stats.left|convert:rate }}</h3>
+                    <h3 class="card-title text-value">{{ current_user_stats.stats.budget_left|convert:rate }}</h3>
                 </div>
             </div>
         </div>
@@ -55,15 +55,16 @@
         <!-- Shared Expenses Card -->
         <div class="col-6">
             <div class="card card-spending shadow">
+                <div class="card-header text-center text-label">Spent Total</div>
                 <div class="card-body text-center">
-                    <small class="card-text text-muted mb-1">My Spending</small>
-                    <h3 class="card-title text-value">{{ current_user_stats.stats.for_self|convert:rate }}</h3>
+                    <h3 class="card-title text-value">{{ current_user_stats.stats.personal_ex|convert:rate }}</h3>
+                    <small></small>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ROW 3: Budget/Spent Table -->
+    <!-- ROW 4: Budget/Spent Table -->
     <div class="row mb-3">
         <div class="col-12">
             <div class="card card-budget shadow">
@@ -71,23 +72,27 @@
                     <strong>Budget</strong>
                 </div>
                 <div class="card-body p-0">
-                    <table class="table table-budget mb-0">
+                    <table class="table table-budget table-equal mb-0">
                         <tbody>
                         <tr>
                             <th><small>Name</small></th>
+                            <th class="text-end"><small>Total</small></th>
                             <th class="text-end"><small>Left</small></th>
                             <th class="text-end"><small>Spent</small></th>
                         </tr>
                         {% for item in user_stats %}
                         <tr>
                             <td>
-                                <div class="fw-semibold">{{ item.user.username }} <small>({{item.stats.budget|convert:rate}})</small></div>
+                                <div class="fw-semibold">{{ item.user.username }}</div>
                             </td>
                             <td>
-                                <div class="text-end">{{item.stats.left|convert:rate}}</div>
+                                <div class="text-end">{{item.stats.total_budget|convert:rate}}</div>
                             </td>
                             <td>
-                                <div class="text-end">{{item.stats.for_self|convert:rate}}</div>
+                                <div class="text-end">{{item.stats.budget_left|convert:rate}}</div>
+                            </td>
+                            <td>
+                                <div class="text-end">{{item.stats.personal_ex|convert:rate}}</div>
                             </td>
                         </tr>
                         {% endfor %}
@@ -102,10 +107,10 @@
     <div class="row mb-3">
         <div class="col-12">
             <div class="card card-deposit shadow">
+                <div class="card-header text-center">Deposit Left</div>
                 <div class="card-body">
                     <div class="row text-center">
                         <div class="col-12">
-                            <small class="text-muted">Deposit Left</small>
                             <h3 class="text-value">{{ remaining_deposit|convert:rate }}</h3>
                         </div>
                     </div>

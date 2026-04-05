@@ -5,10 +5,10 @@
     --budget-light: #b8b8ff;
     --budget-header: #3D167A70;
 
-    /* Spending Section - Green theme */
-    --spending-primary: #7cb342;
-    --spending-light: #d5f7b9;
-    --spending-header: #558b2f80;
+    /* Spending Section - Teal theme */
+    --spending-primary: #1D9E75;
+    --spending-light: #9FE1CB;
+    --spending-header: #0F6E5680;
 
     /* Deposit Section - Blue theme */
     --deposit-primary: #42a5f5;
@@ -64,6 +64,11 @@ body {
 /* Spending Cards */
 .card-spending {
     background-color: var(--spending-light);
+    border: none;
+}
+
+.card-spending-primary {
+    background-color: var(--spending-primary);
     border: none;
 }
 
@@ -136,6 +141,11 @@ body {
 .table-scroll {
     max-height: 150px;
     overflow-y: auto;
+}
+
+.table-equal th,
+.table-equal td {
+    width: 25%;
 }
 
 .table th {
@@ -358,7 +368,6 @@ footer .nav-link.active {
 
 .text-label {
     font-size: 0.875rem;
-    opacity: 0.8;
     margin-bottom: 0.25rem;
 }
 

@@ -10,6 +10,7 @@ from expenses.forms import IncomeForm
 from expenses.models import Income, Deposit, Expense, SHARED_CATEGORIES
 
 from expenses.notifications import notify_user
+from expenses.services import get_user_stats
 
 
 @login_required
@@ -46,18 +47,6 @@ def add_income(request):
     current_month_income_list = income_qs.filter(date__month=date.today().month
                                               ,date__year=date.today().year)
 
-    # GET USER BUDGET
-    income_amount = (Income.objects
-              .filter(user=current_user, date__month=date.today().month, date__year=date.today().year)
-              .aggregate(Sum('amount'))['amount__sum'] or 0)
-    deposit = (Deposit.objects
-               .filter(user=current_user, date__month=date.today().month, date__year=date.today().year)
-               .aggregate(Sum('amount'))['amount__sum'] or 0)
-    spent = (Expense.objects
-             .filter(user=current_user, date__month=date.today().month, date__year=date.today().year)
-             .exclude(category__in=SHARED_CATEGORIES)
-             .aggregate(Sum('amount'))['amount__sum'] or 0)
-
     income_data = {}
 
     for item in current_month_income_list:
@@ -76,15 +65,15 @@ def add_income(request):
             new_income.user = current_user
             new_income.save()
 
-            # User's budget left
-            budget = (income_amount + new_income.amount) - deposit - spent
+            # Add to User's budget
+            user_stats = get_user_stats(current_user, date.today().month, date.today().year)
 
             notify_user(
                 added_by_username=request.user.username,
                 amount=new_income.amount,
                 category="Income",
                 description=new_income.description,
-                budget=budget,
+                budget=user_stats['budget_left'],
             )
 
             return redirect('add_income')

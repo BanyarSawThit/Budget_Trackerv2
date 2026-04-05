@@ -11,7 +11,7 @@ def shopping_preview(request):
 
     context = {
         'shopping': shopping[:5],
-        'shopping_count': shopping.count()
+        'shopping_count': ShoppingItem.objects.count()
     }
 
     return context
