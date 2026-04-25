@@ -147,6 +147,7 @@ def add_expense(request):
         'today_total': today_total,
         'user_budget_left':user_stats['budget_left'],
         'today_list': today_list,
+        'user': current_user,
     }
     return render(request, 'expenses/add_expense.html', context)
 

@@ -4,14 +4,17 @@ from decouple import config
 TELEGRAM_BOT_TOKEN = config('TELEGRAM_BOT_TOKEN')
 GROUP_CHAT_ID = config('TELEGRAM_GROUP_CHAT_ID')
 
-
 def send_telegram(chat_id, message):
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-    requests.post(url, data={
-        'chat_id': chat_id,
-        'text': message,
-        'parse_mode': 'HTML'
-    })
+    try:
+
+        requests.post(url, data={
+            'chat_id': chat_id,
+            'text': message,
+            'parse_mode': 'HTML'
+        }, timeout=5)
+    except Exception:
+        pass
 
 def notify_user(added_by_username, amount, category, description, budget):
         msg = (
