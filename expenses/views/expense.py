@@ -1,5 +1,6 @@
 import csv
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from datetime import date, datetime
@@ -12,7 +13,7 @@ from expenses.forms import ExpenseForm
 from expenses.models import Expense, User, Income, SHARED_CATEGORIES, Deposit, CATEGORY_CHOICES
 
 from expenses.notifications import notify_user
-from expenses.services import get_user_stats
+from expenses.services import get_user_stats, get_available_balance
 
 
 @login_required
@@ -106,8 +107,13 @@ def add_expense(request):
 
     current_user = request.user
 
+    session_month = request.session.get("selected_month", date.today().month)
+    session_year = request.session.get("selected_year", date.today().year)
+
     # User total budget before adding expense
-    user_stats = get_user_stats(current_user, date.today().month, date.today().year)
+    user_stats = get_user_stats(current_user, session_month, session_year)
+
+    user_balance = get_available_balance(current_user)
 
     # today spent total
     today_total = (Expense.objects
@@ -130,13 +136,16 @@ def add_expense(request):
             else:
                 budget = user_stats['budget_left'] - expense.amount
 
-            notify_user(
+            double_check_tele = notify_user(
                 added_by_username=request.user.username,
                 amount=expense.amount,
                 category=expense.get_category_display(),
                 description=expense.description,
                 budget=budget,
             )
+
+            if not double_check_tele:
+                messages.warning(request, "Expense saved. Telegram noti failed.")
 
             return redirect('add_expense')
     else:
@@ -145,7 +154,7 @@ def add_expense(request):
     context = {
         'form': form,
         'today_total': today_total,
-        'user_budget_left':user_stats['budget_left'],
+        'user_balance':user_balance,
         'today_list': today_list,
         'user': current_user,
     }
@@ -180,7 +189,6 @@ def summary(request):
 
     # === MONTH FILTER ===
     month_range = range(1, 13)
-    session_month = request.session.get("selected_month", date.today().month)
 
     def get_int(value, default):
         try:
@@ -231,15 +239,18 @@ def summary(request):
 
     for user in all_user:
         user_stats = get_user_stats(user, selected_month, selected_year)
+        user_balance = get_available_balance(user)
         user_stats_list.append({
             'user': user,
             'stats': user_stats,
+            'balance': user_balance,
         })
 
     current_user_stats = next(
         (item for item in user_stats_list if item['user'] == request.user),
         None
     )
+
 
     context = {
         'user_stats': user_stats_list,
@@ -280,3 +291,39 @@ def export_expense_csv(request):
         writer.writerow([e.date, e.user.username, e.get_category_display(), e.amount, e.description])
 
     return response
+
+
+@login_required
+def user_detail(request, id):
+
+    month_range = range(1, 13)
+
+    def get_int(value, default):
+        try:
+            return int(value)
+        except(TypeError, ValueError):
+            return default
+
+    selected_user = get_object_or_404(User, id=id)
+    session_month = request.session.get('selected_month', date.today().month)
+    selected_month = get_int(request.GET.get('month'), session_month)
+    selected_year = request.session.get('selected_year', date.today().year)
+    selected_month_name = month_name[selected_month]
+
+    expenses = (Expense.objects
+                .filter(user=selected_user, date__month=selected_month, date__year=selected_year)
+                .exclude(category__in=SHARED_CATEGORIES).order_by('-amount'))
+
+    user_balance = get_available_balance(selected_user)
+
+    context = {
+        'user': selected_user,
+        'month_name': selected_month_name,
+        'month_range': month_range,
+        'selected_month': selected_month,
+        'user_stats': get_user_stats(selected_user, selected_month, selected_year),
+        'expenses': expenses,
+        'user_balance': user_balance,
+
+    }
+    return render(request, 'expenses/user_detail.html', context)

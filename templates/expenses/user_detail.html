@@ -5,79 +5,76 @@
 
 <div class="container mt-3">
 
-    <!-- ROW 1: Header + Month Selector -->
-    <div class="row mb-3">
+    <!-- Row 1: Name Card -->
+    <div class="row mb-3 justify-content-center">
         <div class="col-12">
             <div class="card card-budget shadow">
+                <div class="card-header text-center text-label">{{ user }}'s Balance Left</div>
                 <div class="card-body text-center">
-                    <small class="text-muted">{{ target_user.username }} · {{ selected_month_name }} {{ selected_year }}</small>
-                    <h3 class="text-value">{{ total_spent|convert:rate }}</h3>
+                    <h3 class="card-title text-value">{{ user_balance }}</h3>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Month Buttons -->
+    <!-- Row 2: Month Selector -->
     <div class="row mb-3">
         <div class="col-12">
             <div class="btn-group w-100 shadow" role="group">
                 {% for month_num in month_range %}
-                    <a href="?month={{ month_num }}&year={{ selected_year }}"
-                       class="btn btn-sm {% if month_num == selected_month %}btn-light{% else %}btn-primary{% endif %}">
-                        {{ month_num }}
-                    </a>
+                <a href="?month={{ month_num }}"
+                   class="btn btn-sm
+                   {% if month_num == selected_month %}
+                   btn-light
+                   {% else %}
+                   btn-primary
+                   {% endif %}">
+                    {{month_num}}</a>
                 {% endfor %}
             </div>
         </div>
     </div>
 
-    <!-- ROW 2: Quick Stats (Personal / Shared / Avg Daily) -->
+
+    <!-- Row 3: Spending Review-->
     <div class="row mb-3">
-        <div class="col-4">
-            <div class="card card-budget shadow text-center py-2">
-                <small class="text-muted">Personal</small>
-                <div class="fw-bold">{{ personal_total|convert:rate }}</div>
+        <div class="col-6">
+            <div class="card card-spending shadow">
+                <div class="card-header text-center text-label">Daily Avg</div>
+                <div class="card-body text-center">
+                    <h3 class="card-title text-value">{{ user_stats.daily_expense_avg|convert:rate }}</h3>
+                </div>
             </div>
         </div>
-        <div class="col-4">
-            <div class="card card-deposit shadow text-center py-2">
-                <small class="text-muted">Shared</small>
-                <div class="fw-bold">{{ shared_total|convert:rate }}</div>
-            </div>
-        </div>
-        <div class="col-4">
-            <div class="card card-budget shadow text-center py-2">
-                <small class="text-muted">Avg / Day</small>
-                <div class="fw-bold">{{ avg_daily|convert:rate }}</div>
+
+        <div class="col-6">
+            <div class="card card-spending shadow">
+                <div class="card-header text-center text-label">Spending</div>
+                <div class="card-body text-center">
+                    <h3 class="card-title text-value">{{ user_stats.personal_ex|convert:rate }}</h3>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- ROW 3: Category Breakdown -->
+
     <div class="row mb-3">
         <div class="col-12">
-            <div class="card card-budget shadow">
-                <div class="card-header text-center">
-                    <strong>By Category</strong>
-                </div>
+            <div class="card card-spending shadow-sm">
+                <div class="card-header">Personal Spending</div>
+            </div>
+            <div class="table-scroll">
                 <div class="card-body p-0">
-                    <table class="table table-budget mb-0">
+                    <table class="table table-spending mb-0">
                         <tbody>
-                            {% for cat in category_breakdown %}
-                            <tr>
-                                <td>
-                                    <a href="?month={{ selected_month }}&year={{ selected_year }}&category={{ cat.code }}"
-                                       class="{% if selected_category == cat.code %}fw-bold text-primary{% endif %} text-decoration-none">
-                                        {{ cat.name }}
-                                    </a>
-                                </td>
-                                <td class="text-end fw-semibold">{{ cat.total|convert:rate }}</td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="2" class="text-center text-muted">No expenses this month</td>
-                            </tr>
-                            {% endfor %}
+                        {% for item in expenses %}
+                        <tr>
+                            <td>{{ item.date|date:"d" }}</td>
+                            <td>{{ item.description }}</td>
+                            <td>{{ item.category }}</td>
+                            <td>{{ item.amount }}</td>
+                        </tr>
+                        {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -85,90 +82,22 @@
         </div>
     </div>
 
-    <!-- Category + Year Selectors -->
+        <!-- Row 3: Spending Review-->
     <div class="row mb-3">
-        <!-- Category filter -->
-        <div class="col-8">
-            <div class="dropdown shadow">
-                <button class="btn btn-primary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
-                    {% if selected_category %}
-                        {{ selected_category|title }}
-                    {% else %}
-                        All Categories
-                    {% endif %}
-                </button>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a class="dropdown-item" href="?month={{ selected_month }}&year={{ selected_year }}">All</a>
-                    </li>
-                    {% for code, name in category_choices %}
-                    <li>
-                        <a class="dropdown-item" href="?month={{ selected_month }}&year={{ selected_year }}&category={{ code }}">
-                            {{ name }}
-                        </a>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-
-        <!-- Year selector -->
-        <div class="col-4">
-            <div class="dropdown shadow">
-                <button class="btn btn-primary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
-                    {{ selected_year }}
-                </button>
-                <ul class="dropdown-menu">
-                    {% for year in year_range %}
-                    <li>
-                        <a class="dropdown-item" href="?month={{ selected_month }}&year={{ year }}">{{ year }}</a>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- ROW 4: Expense List -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <div class="card card-budget shadow">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <strong>Transactions</strong>
-                        <span class="badge">{{ expenses.count }} entries</span>
-                    </div>
+        <div class="col-6">
+            <div class="card card-income shadow">
+                <div class="card-header text-center text-label">Income</div>
+                <div class="card-body text-center">
+                    <h3 class="card-title text-value">{{ user_stats.income|convert:rate }}</h3>
                 </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-budget mb-0">
-                            <tbody>
-                                {% for expense in expenses %}
-                                <tr>
-                                    <td>
-                                        <div class="fw-semibold">{{ expense.date|date:"d" }}</div>
-                                        <small class="text-muted">{{ expense.get_category_display }}</small>
-                                    </td>
-                                    <td>
-                                        <div class="fw-bold">{{ expense.amount|convert:rate }}</div>
-                                        <small class="text-muted">{{ expense.description|default:"—" }}</small>
-                                    </td>
-                                    <td class="text-end">
-                                        <a href="{% url 'edit_expense' expense.id %}" class="btn btn-sm btn-warning">Edit</a>
-                                        <a href="{% url 'delete_expense' expense.id %}" class="btn btn-sm btn-danger">Del</a>
-                                    </td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="3" class="text-center text-muted py-4">
-                                        <div class="mb-2">📭</div>
-                                        No expenses for {{ selected_month_name }} {{ selected_year }}
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="card card-spending shadow">
+                <div class="card-header text-center text-label">Deposit</div>
+                <div class="card-body text-center">
+                    <h3 class="card-title text-value">{{ user_stats.deposit|convert:rate }}</h3>
                 </div>
             </div>
         </div>

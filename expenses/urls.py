@@ -21,8 +21,9 @@ urlpatterns = [
     path('deposit/edit/<int:id>', deposit.edit_deposit, name='edit_deposit'),
     path('deposit/delete/<int:id>', deposit.delete_deposit, name='delete_deposit'),
 
-    # user summary
-    path('user/', expense.summary, name='summary'),
+    # summary
+    path('summary/', expense.summary, name='summary'),
+    path('summary/user/<int:id>', expense.user_detail, name='user_detail'),
 
     # export
     path('export/expenses', expense.export_expense_csv, name='expose_expense'),

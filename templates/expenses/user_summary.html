@@ -8,11 +8,11 @@
     <div class="row mb-3">
         <div class="col-12">
             <div class="card card-budget shadow">
-                <div class="card-header text-center"><strong>{{ selected_month_name }} Budget Left</strong></div>
+                <div class="card-header text-center"><strong>Available Balance</strong></div>
                 <div class="card-body">
                     <div class="row text-center">
                         <div class="col-12">
-                            <h3 class="text-value">{{ monthly_budget_left|convert:rate }}</h3>
+                            <h3 class="text-value">{{ current_user_stats.balance|convert:rate }}</h3>
                         </div>
                     </div>
                 </div>
@@ -45,9 +45,9 @@
         <!-- Personal Expenses Card -->
         <div class="col-6">
             <div class="card card-budget shadow">
-                <div class="card-header text-center text-label">My Budget</div>
+                <div class="card-header text-center text-label">Daily Average</div>
                 <div class="card-body text-center py-3">
-                    <h3 class="card-title text-value">{{ current_user_stats.stats.budget_left|convert:rate }}</h3>
+                    <h3 class="card-title text-value">{{ current_user_stats.stats.daily_expense_avg|convert:rate }}</h3>
                 </div>
             </div>
         </div>
@@ -76,25 +76,24 @@
                         <tbody>
                         <tr>
                             <th><small>Name</small></th>
-                            <th class="text-end"><small>Total</small></th>
-                            <th class="text-end"><small>Left</small></th>
                             <th class="text-end"><small>Spent</small></th>
+                            <th class="text-end"><small>Left</small></th>
                         </tr>
                         {% for item in user_stats %}
+
                         <tr>
                             <td>
-                                <div class="fw-semibold">{{ item.user.username }}</div>
-                            </td>
-                            <td>
-                                <div class="text-end">{{item.stats.total_budget|convert:rate}}</div>
-                            </td>
-                            <td>
-                                <div class="text-end">{{item.stats.budget_left|convert:rate}}</div>
+                                <a href="{% url 'user_detail' item.user.id %}"><div class="fw-semibold">{{ item.user.username }}</div></a>
                             </td>
                             <td>
                                 <div class="text-end">{{item.stats.personal_ex|convert:rate}}</div>
                             </td>
+                            <td>
+                                <div class="text-end">{{item.stats.balance|convert:rate}}</div>
+                            </td>
+
                         </tr>
+
                         {% endfor %}
                         </tbody>
                     </table>
@@ -103,7 +102,7 @@
         </div>
     </div>
 
-    <!-- ROW 4: Deposit Left -->
+    <!-- ROW 5: Deposit Left -->
     <div class="row mb-3">
         <div class="col-12">
             <div class="card card-deposit shadow">
@@ -119,7 +118,7 @@
         </div>
     </div>
 
-    <!-- ROW 5: Income/Deposit Table -->
+    <!-- ROW 6: Income/Deposit Table -->
     <div class="row mb-3">
         <div class="col-12">
             <div class="card card-deposit shadow">
@@ -169,25 +168,27 @@
     </div>
 
     <!-- Action Buttons (Income/Deposit) -->
-    <div class="row mb-5">
-        <div class="col-4">
+    <div class="row mb-3">
+        <div class="col-6">
             <a href="{% url 'add_income' %}" class="btn btn-income w-100 shadow">
                 Income
             </a>
         </div>
-        <div class="col-4">
-            <form method="post" action="{% url 'logout' %}">
-                {% csrf_token %}
-                <button class="btn btn-warning w-100 shadow">
-                    Logout
-                </button>
-            </form>
-        </div>
-        <div class="col-4">
+
+        <div class="col-6">
             <a href="{% url 'add_deposit' %}" class="btn btn-deposit w-100 shadow">
                 Deposit
             </a>
         </div>
+    </div>
+
+    <div class="row">
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="btn btn-danger w-100 shadow">
+                Logout
+            </button>
+        </form>
     </div>
 
 </div>
