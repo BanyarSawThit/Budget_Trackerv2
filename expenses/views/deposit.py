@@ -69,7 +69,7 @@ def add_deposit(request):
                 amount=new_deposit.amount,
                 category="Deposit",
                 description=new_deposit.description,
-                budget=user_stats['budget_left'],
+                budget=user_stats['balance'],
             )
 
             return redirect('add_deposit')

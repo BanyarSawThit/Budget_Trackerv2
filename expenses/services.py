@@ -23,22 +23,6 @@ def get_user_stats(user, month, year):
         - personal_budget : total budget - personal_ex
     """
 
-
-    started_income = (Income.objects
-                     .filter(user=user)
-                     .exclude(date__month=month, date__year=year)
-                     .aggregate(Sum("amount"))["amount__sum"] or 0)
-
-    started_deposit = (Deposit.objects
-                      .filter(user=user)
-                      .exclude(date__month=month, date__year=year)
-                      .aggregate(Sum("amount"))["amount__sum"] or 0)
-
-    started_expenses = (Expense.objects
-                      .filter(user=user)
-                      .exclude(category__in=SHARED_CATEGORIES, date__month=month, date__year=year)
-                      .aggregate(Sum("amount"))["amount__sum"] or 0)
-
     income = (Income.objects
               .filter(user=user, date__month=month, date__year=year)
               .aggregate(Sum("amount"))["amount__sum"] or 0)
@@ -66,8 +50,6 @@ def get_user_stats(user, month, year):
     else:
         days_in_month = Decimal(calendar.monthrange(year, month)[1])
 
-    # print(started_income, started_deposit, started_expenses)
-    # started_budget = started_income - started_deposit - started_expenses
     balance = all_income - all_deposit - all_expenses
     daily_expense_avg = expenses / days_in_month
 
@@ -75,7 +57,6 @@ def get_user_stats(user, month, year):
     return {
         'income': income,
         'deposit': deposit,
-        # 'started_budget': started_budget,
         'personal_ex': expenses,
         'balance': balance,
         'daily_expense_avg': daily_expense_avg,

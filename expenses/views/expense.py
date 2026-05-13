@@ -132,11 +132,11 @@ def add_expense(request):
             expense.save()
 
             if expense.category in SHARED_CATEGORIES:
-                budget = user_stats['budget_left']
+                budget = user_stats['balance']
             else:
-                budget = user_stats['budget_left'] - expense.amount
+                budget = user_stats['balance'] - expense.amount
 
-            double_check_tele = notify_user(
+            notify_user(
                 added_by_username=request.user.username,
                 amount=expense.amount,
                 category=expense.get_category_display(),
@@ -144,8 +144,6 @@ def add_expense(request):
                 budget=budget,
             )
 
-            if not double_check_tele:
-                messages.warning(request, "Expense saved. Telegram noti failed.")
 
             return redirect('add_expense')
     else:

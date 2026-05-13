@@ -73,7 +73,7 @@ def add_income(request):
                 amount=new_income.amount,
                 category="Income",
                 description=new_income.description,
-                budget=user_stats['budget_left'],
+                budget=user_stats['balance'],
             )
 
             return redirect('add_income')
