@@ -122,6 +122,7 @@ body {
 @media (max-width: 768px) {
     .table-budget tbody tr td,
     .table-spending tbody tr td,
+    .table-income tbody tr td,
     .table-deposit tbody tr td {
         padding: 0.5rem 0.5rem !important;  /* Reduced from 0.75rem 1rem */
         font-size: 0.875rem;  /* Slightly smaller font */
@@ -130,6 +131,7 @@ body {
     /* Make action buttons smaller on mobile */
     .table-budget .btn-sm,
     .table-spending .btn-sm,
+    .table-income .btn-sm,
     .table-deposit .btn-sm {
         font-size: 0.75rem;
         padding: 0.25rem 0.5rem;
@@ -257,6 +259,7 @@ body {
 
 .table-income tbody tr td {
     background-color: transparent !important;
+    vertical-align: middle;
     padding: 0.75rem 1rem;
     border: none !important;
 }
@@ -270,6 +273,7 @@ body {
     background-color: transparent !important;
     border: none !important;
 }
+
 
 /* ===== BUTTON STYLES ===== */
 

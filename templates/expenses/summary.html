@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% load currency_filter %}
+{% block content %}
+
+<div class="container mt-3">
+
+    <!-- ROW 1: Total Balance -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card card-budget shadow">
+                <div class="card-header text-center"><strong>Available Balance</strong></div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-12">
+                            <h3 class="text-value">{{ current_user_stats.stats.balance|convert:rate }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ROW 2: Month Selector -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="btn-group w-100 shadow" role="group">
+                {% for month_num in month_range %}
+                    <a
+                        href="?month={{ month_num }}"
+                        class="btn btn-sm
+                        {% if month_num == selected_month %}
+                            btn-light
+                        {% else %}
+                            btn-primary
+                        {% endif %}">
+                        {{ month_num }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- ROW 3: Quick Stats Cards -->
+    <div class="row mb-3">
+        <div class="col-6">
+            <div class="card card-deposit shadow">
+                <div class="card-header text-center text-label">Daily Average</div>
+                <div class="card-body text-center py-3">
+                    <h3 class="card-title text-value">{{ current_user_stats.stats.daily_expense_avg|convert:rate }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card card-deposit shadow">
+                <div class="card-header text-center text-label">Spent Total</div>
+                <div class="card-body text-center">
+                    <h3 class="card-title text-value">{{ current_user_stats.stats.personal_ex|convert:rate }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ROW 4: Per-User Budget Cards -->
+    <div class="row mb-3">
+        <div class="col-12">
+            {% for item in user_stats %}
+
+            <div class="card card-budget shadow mb-2">
+                <div class="card-body pb-2">
+
+                    <!-- Header: name + detail button -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="fw-semibold">{{ item.user.username }}</span>
+                        <a href="{% url 'user_detail' item.user.id %}" class="btn btn-sm btn-primary">Detail</a>
+                    </div>
+
+                    <!-- Three stat pills: Income / Deposit / Budget -->
+                    <div class="row text-center g-2 mb-3">
+                        <div class="col-4">
+                            <div class="p-1 rounded" style="background: var(--bs-light, #f8f9fa);">
+                                <div class="text-label" style="font-size: 0.65rem;">Income</div>
+                                <div class="text-value" style="font-size: 0.85rem;">{{ item.stats.income|convert:rate }}</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-1 rounded" style="background: var(--bs-light, #f8f9fa);">
+                                <div class="text-label" style="font-size: 0.65rem;">Deposit</div>
+                                <div class="text-value" style="font-size: 0.85rem;">{{ item.stats.deposit|convert:rate }}</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-1 rounded" style="background: var(--bs-light, #f8f9fa);">
+                                <div class="text-label" style="font-size: 0.65rem;">Budget</div>
+                                <div class="text-value" style="font-size: 0.85rem;">{{ item.available_budget|convert:rate }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Spending progress bar -->
+                    <div class="d-flex justify-content-between mb-1">
+                        <small class="text-muted">Spent: <strong>{{ item.stats.personal_ex|convert:rate }}</strong></small>
+                        <small class="text-muted">Left: <strong>{{ item.budget_left|convert:rate }}</strong></small>
+                    </div>
+                    <div class="progress mb-1" style="height: 8px;">
+                        <div class="progress-bar
+                            {% if item.pct >= 100 %}
+                                bg-danger
+                            {% elif item.pct >= 75 %}
+                                bg-warning
+                            {% else %}
+                                bg-success
+                            {% endif %}"
+                            role="progressbar"
+                            style="width: {% if item.pct > 100 %}100{% else %}{{ item.pct }}{% endif %}%;">
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <small class="text-muted">{{ item.pct }}% used</small>
+                    </div>
+
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- ROW 5: Deposit Left -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card card-deposit shadow">
+                <div class="card-header text-center">Deposit Left</div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-12">
+                            <h3 class="text-value">{{ remaining_deposit|convert:rate }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="row mb-3">
+        <div class="col-6">
+            <a href="{% url 'add_income' %}" class="btn btn-income w-100 shadow">
+                Income
+            </a>
+        </div>
+        <div class="col-6">
+            <a href="{% url 'add_deposit' %}" class="btn btn-deposit w-100 shadow">
+                Deposit
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="btn btn-danger w-100 shadow">Logout</button>
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}

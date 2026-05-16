@@ -19,10 +19,18 @@ def send_telegram(chat_id, message):
                 time.sleep(5)
 
 
-def notify_user(added_by_username, amount, category, description, budget):
-        msg = (
-            f"<b>{added_by_username}'s</b> Balance: ฿{budget}\n"
-            f"{category}: ฿{amount}\n"
-            f"{description or '-'}\n"
-        )
-        send_telegram(GROUP_CHAT_ID, msg)
+def notify_user(added_by_username, amount, category, description, budget=None, deposit=None):
+        if budget is not None:
+            msg = (
+                f"<b>{added_by_username}'s</b> Balance: ฿{budget}\n"
+                f"{category}: ฿{amount}\n"
+                f"{description or '-'}\n"
+            )
+            send_telegram(GROUP_CHAT_ID, msg)
+        else:
+            msg = (
+                f"Deposit amount left: ฿{deposit}\n"
+                f"{category}: ฿{amount} by <b>{added_by_username}</b>\n"
+                f"{description or '-'}\n"
+            )
+            send_telegram(GROUP_CHAT_ID, msg)

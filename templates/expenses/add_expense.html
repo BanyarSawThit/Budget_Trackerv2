@@ -13,7 +13,7 @@
             <div class="card card-budget shadow">
                 <div class="card-header text-center text-label">{{ user.username }}'s Balance</div>
                 <div class="card-body text-center">
-                    <h3 class="card-title text-value">{{ user_balance|convert:rate }}</h3>
+                    <h3 class="card-title text-value">{{ user_stats.balance|convert:rate }}</h3>
                 </div>
             </div>
         </div>
@@ -67,6 +67,12 @@
                                 <td >
                                     <div class="fw-bold">{{ item.amount|convert:rate }}</div>
                                     <small class="text-muted">{{ item.description }}</small>
+                                </td>
+                                <td>
+                                    <div class="text-end">
+                                        <a href="{% url 'edit_expense' item.id %}" class="btn btn btn-warning">Edit</a>
+                                        <a href="{% url 'delete_expense' item.id %}" class="btn btn btn-danger">Delete</a>
+                                    </div>
                                 </td>
                             </tr>
                             {% empty %}

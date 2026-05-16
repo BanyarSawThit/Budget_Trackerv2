@@ -14,6 +14,7 @@ CATEGORY_CHOICES = [
     ('wear', 'Wear'),
     ('cosmetic', 'Cosmetic'),
     ('fun', 'Fun & Snack'),
+    ('gift', 'Gift'),
     ('others', 'Others')
                     ]
 

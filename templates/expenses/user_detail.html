@@ -11,7 +11,7 @@
             <div class="card card-budget shadow">
                 <div class="card-header text-center text-label">{{ user }}'s Balance Left</div>
                 <div class="card-body text-center">
-                    <h3 class="card-title text-value">{{ user_balance }}</h3>
+                    <h3 class="card-title text-value">{{ user_stats.balance|convert:rate }}</h3>
                 </div>
             </div>
         </div>
@@ -35,8 +35,28 @@
         </div>
     </div>
 
-
     <!-- Row 3: Spending Review-->
+    <div class="row mb-3">
+        <div class="col-6">
+            <div class="card card-spending shadow">
+                <div class="card-header text-center text-label">Available Budget</div>
+                <div class="card-body text-center">
+                    <h3 class="card-title text-value">{{ available_budget|convert:rate }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="card card-spending shadow">
+                <div class="card-header text-center text-label">...</div>
+                <div class="card-body text-center">
+                    <h3 class="card-title text-value">  </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 4: Spending Review-->
     <div class="row mb-3">
         <div class="col-6">
             <div class="card card-spending shadow">
@@ -71,7 +91,7 @@
                         <tr>
                             <td>{{ item.date|date:"d" }}</td>
                             <td>{{ item.description }}</td>
-                            <td>{{ item.category }}</td>
+                            <td>{{ item.get_category_display }}</td>
                             <td>{{ item.amount }}</td>
                         </tr>
                         {% endfor %}
@@ -82,7 +102,7 @@
         </div>
     </div>
 
-        <!-- Row 3: Spending Review-->
+    <!-- Row 5: Spending Review-->
     <div class="row mb-3">
         <div class="col-6">
             <div class="card card-income shadow">

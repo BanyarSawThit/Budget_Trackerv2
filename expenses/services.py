@@ -1,4 +1,5 @@
 import calendar
+import datetime
 from datetime import date
 from decimal import Decimal
 
@@ -62,22 +63,23 @@ def get_user_stats(user, month, year):
         'daily_expense_avg': daily_expense_avg,
     }
 
-def get_available_balance(user):
+def get_deposit(month, year):
 
-    """
-    Calculate the balance of a given user.
 
-    :param user: User instance
-    :return: int - balance amount
-    """
-    income = (Income.objects.filter(user=user)
-              .aggregate(Sum("amount"))["amount__sum"] or 0)
-    deposit = (Deposit.objects.filter(user=user)
-              .aggregate(Sum("amount"))["amount__sum"] or 0)
-    expenses = (Expense.objects.filter(user=user)
-                .exclude(category__in=SHARED_CATEGORIES)
-                .aggregate(Sum("amount"))["amount__sum"] or 0)
+    deposit = (Deposit.objects.filter(date__month=month, date__year=year)
+               .aggregate(Sum("amount"))["amount__sum"] or 0)
 
-    balance = income - deposit - expenses
+    shared_spent = (Expense.objects.filter(category__in=SHARED_CATEGORIES, date__month=month, date__year=year)
+                    .aggregate(Sum("amount"))["amount__sum"] or 0)
 
-    return balance
+    return deposit - shared_spent
+
+def get_opening_budget(user, month, year):
+
+    start_of_month = datetime.date(year, month, 1)
+
+    income = Income.objects.filter(user=user, date__lt=start_of_month).aggregate(Sum("amount"))["amount__sum"] or 0
+    deposit = Deposit.objects.filter(user=user, date__lt=start_of_month).aggregate(Sum("amount"))["amount__sum"] or 0
+    expenses = Expense.objects.filter(user=user, date__lt=start_of_month).exclude(category__in=SHARED_CATEGORIES).aggregate(Sum("amount"))["amount__sum"] or 0
+
+    return income - deposit - expenses

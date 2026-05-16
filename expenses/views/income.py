@@ -7,29 +7,31 @@ from datetime import date
 from django.shortcuts import render, redirect, get_object_or_404
 
 from expenses.forms import IncomeForm
-from expenses.models import Income, Deposit, Expense, SHARED_CATEGORIES
+from expenses.models import Income, User
 
 from expenses.notifications import notify_user
 from expenses.services import get_user_stats
+from expenses.utils import get_int, get_selected_period
 
 
 @login_required
 def list_income(request):
-    income = Income.objects.select_related('user').all()
 
-    income_data = {}
+    users = User.objects.all()
+    month_range = range(1,13)
 
-    for item in income:
-        income_data[item.id] = {
-            'id': item.id,
-            'user': item.user,
-            'amount': item.amount,
-            'date': item.date,
-            'description': item.description
-        }
+    selected_user = get_int(request.GET.get('user'), request.user.id)
 
+    selected_month, selected_year = get_selected_period(request)
+
+    income = Income.objects.filter(user=selected_user, date__month=selected_month, date__year=selected_year)
     context = {
-        'income_data': income_data,
+        'users': users,
+        'selected_user': selected_user,
+        'month_range': month_range,
+        'selected_month': selected_month,
+        'selected_year': selected_year,
+        'incomes': income,
     }
     return render(request, 'income/income_list.html', context)
 
@@ -44,7 +46,7 @@ def add_income(request):
                                  date__month=date.today().month,
                                  date__year=date.today().year)
                          .aggregate(Sum('amount'))['amount__sum'] or 0)
-    current_month_income_list = income_qs.filter(date__month=date.today().month
+    current_month_income_list = income_qs.filter(user=current_user, date__month=date.today().month
                                               ,date__year=date.today().year)
 
     income_data = {}
