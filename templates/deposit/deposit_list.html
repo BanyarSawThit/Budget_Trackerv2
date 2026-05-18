@@ -3,44 +3,65 @@
 
 {% block content %}
 <div class="container mt-3">
+
     <div class="row mb-3">
         <div class="col-12">
-            <div class="card card-deposit shadow">
+            <div class="btn-group w-100 shadow" role="group">
+                {% for user in users %}
+                <a href="?user={{ user.id }}"
+                   class="btn btn-sm
+                   {% if user.id == selected_user %} btn-light
+                   {% else %} btn-primary
+                   {% endif %}">{{ user.username }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 
-                <div class="card-header text-center">
-                    <strong>All Deposits</strong>
-                </div>
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="btn-group w-100" role="group">
+                {% for month in month_range %}
+                <a href="?month={{ month }}&year={{ year }}"
+                   class="btn btn-sm
+                   {% if month == selected_month %} btn-light
+                   {% else %} btn-primary
+                   {% endif %}">{{ month }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card card-deposit">
                 <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-deposit">
-                            <tbody>
-                            {% for item in deposit_data.values %}
-                                <tr>
-                                    <td>{{ item.date }}</td>
-                                    <td>{{ item.user.username }}</td>
-                                    <td>{{ item.description|default:"-" }}</td>
-                                    <td class="text-end fw-semibold">{{ item.amount|convert:rate }}</td>
-                                    <td class="text-center">
-                                        <a href="{% url 'edit_deposit' item.id %}" class="btn btn-sm btn-warning">Edit</a>
-                                        <a href="{% url 'delete_deposit' item.id %}" class="btn btn-sm btn-danger">Delete</a>
-                                    </td>
-                                </tr>
-                            {% empty %}
-                                <tr>
-                                    <td colspan="5" class="text-center text-muted py-3">No deposits yet</td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                    <table class="table table-deposit">
+                        <tbody>
+                        {% for item in deposits %}
+                            <tr>
+                                <td>{{ item.date|date:"d" }}</td>
+                                <td>{{ item.description|default:"-" }}</td>
+                                <td class="text-end fw-semibold">{{ item.amount|convert:rate }}</td>
+                                <td class="text-center">
+                                    <a href="{% url 'edit_deposit' item.id %}" class="btn btn-sm btn-warning">Edit</a>
+                                    <a href="{% url 'delete_deposit' item.id %}" class="btn btn-sm btn-danger">Delete</a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-3">No deposits yet</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Navigation Buttons -->
-    <div class="row mb-5">
+    <div class="row mb-3">
         <div class="col-6">
             <a href="{% url 'add_deposit' %}" class="btn btn-deposit w-100">
                 + Add Deposit

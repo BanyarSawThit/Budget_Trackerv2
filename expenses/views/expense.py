@@ -1,4 +1,7 @@
+import calendar
 import csv
+from decimal import Decimal
+from unicodedata import category
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -13,14 +16,14 @@ from expenses.forms import ExpenseForm
 from expenses.models import Expense, User, Income, SHARED_CATEGORIES, Deposit, CATEGORY_CHOICES
 
 from expenses.notifications import notify_user
-from expenses.services import get_user_stats, get_deposit, get_opening_budget
+from expenses.services import get_user_stats, get_deposit, get_opening_budget, get_shared_expenses
 from expenses.utils import get_int, get_selected_period
 
 
 @login_required
 def expense_list(request):
-    month_range = range(1, 13)
     users = User.objects.all()
+    month_range = range(1, 13)
     current_year = date.today().year
     year_range = range(current_year - 2, current_year + 3)
 
@@ -29,7 +32,6 @@ def expense_list(request):
 
     selected_user = get_int(request.GET.get('user'), 0)
     selected_category = request.GET.get('category', '')
-    selected_search = request.GET.get('search', '')
 
     expenses = (Expense.objects
                 .select_related('user')
@@ -39,28 +41,8 @@ def expense_list(request):
     if selected_user != 0:
         expenses = expenses.filter(user_id=selected_user)
 
-    top_cats = {}
-    for code, name in CATEGORY_CHOICES:
-        top_cats[name] = (expenses
-                          .filter(category=code)
-                          .aggregate(Sum('amount'))['amount__sum'] or 0)
-    top_cats = dict(sorted(top_cats.items(), key=lambda item: item[1], reverse=True))
-
     if selected_category:
         expenses = expenses.filter(category=selected_category)
-
-    if selected_search:
-        expenses = expenses.filter(description__icontains=selected_search)
-
-    month_total = (expenses.aggregate(Sum('amount'))['amount__sum'] or 0)
-
-    shared_total = (expenses
-                       .filter(category__in=SHARED_CATEGORIES)
-                       .aggregate(Sum('amount'))['amount__sum'] or 0)
-
-    personal_total = (expenses
-                         .exclude(category__in=SHARED_CATEGORIES)
-                         .aggregate(Sum('amount'))['amount__sum'] or 0)
 
     context = {
         'expenses': expenses,
@@ -68,19 +50,11 @@ def expense_list(request):
         'selected_user': selected_user,
         'selected_category': selected_category,
         'category_choices': CATEGORY_CHOICES,
-        'top_cats': top_cats,
-        'selected_search': selected_search,
 
-        'month_total': month_total,
-        'shared_total': shared_total,
-        'personal_total': personal_total,
         'selected_month': selected_month,
         'selected_year': selected_year,
-        'selected_month_name': selected_month_name,
         'month_range': month_range,
         'year_range': year_range,
-        'current_month': date.today().month,
-        'current_year': date.today().year,
     }
 
     return render(request, 'expenses/expense_list.html', context)
@@ -176,31 +150,27 @@ def delete_expense(request, id):
 @login_required
 def summary(request):
 
-    # === MONTH FILTER ===
     month_range = range(1, 13)
 
     selected_month, selected_year = get_selected_period(request)
     selected_month_name = month_name[selected_month]
 
+    if selected_month == 1:
+        prev_month, prev_year = 12, selected_year - 1
+    else:
+        prev_month, prev_year = selected_month - 1, selected_year
+
     all_user = list(User.objects.all())
     user_stats_list = []
 
-    # === OVERALL TOTALS ===
-    monthly_income = (Income.objects
-                    .filter(date__month=selected_month,date__year=selected_year)
-                    .aggregate(Sum('amount'))['amount__sum'] or 0)
-    monthly_deposit = (Deposit.objects
+    month_deposit = (Deposit.objects
                      .filter(date__month=selected_month,date__year=selected_year)
                      .aggregate(Sum('amount'))['amount__sum'] or 0)
 
-    # Budget = Income - Deposit (money set aside for shared expenses)
-    monthly_budget = monthly_income - monthly_deposit
-
-    # Remaining deposit = What's left in the shared pool
     shared_monthly_total = (Expense.objects
                             .filter(category__in=SHARED_CATEGORIES, date__month=selected_month,date__year=selected_year)
                             .aggregate(Sum('amount'))['amount__sum'] or 0)
-    remaining_deposit = monthly_deposit - shared_monthly_total
+    remaining_deposit = month_deposit - shared_monthly_total
 
     for user in all_user:
         user_stats = get_user_stats(user, selected_month, selected_year)
@@ -217,12 +187,29 @@ def summary(request):
             'pct': pct,
         })
 
-    user_stats_list.sort(key=lambda x: x['stats']['balance'], reverse=True)
+    today = date.today()
+    if selected_month == today.month and selected_year == today.year:
+        days_in_month = Decimal(today.day)
+    else:
+        days_in_month = Decimal(calendar.monthrange(selected_year, selected_month)[1])
+
+    combined_balance= 0
+    spent_total = 0
+    for item in user_stats_list:
+        combined_balance += item['stats']['net_balance']
+        spent_total += item['stats']['personal_ex']
+
+    daily_avg = spent_total / days_in_month if days_in_month > 0 else 0
+
+    user_stats_list.sort(key=lambda x: x['stats']['net_balance'], reverse=True)
 
     current_user_stats = next(
         (item for item in user_stats_list if item['user'] == request.user),
         None
     )
+
+    shared_food, shared_grocery, shared_utility = get_shared_expenses(selected_month, selected_year)
+    prev_shared_food, prev_shared_grocery, prev_shared_utility = get_shared_expenses(prev_month, prev_year)
 
 
     context = {
@@ -233,12 +220,18 @@ def summary(request):
         'selected_month': selected_month,
         'selected_month_name': selected_month_name,
 
-        # Overall totals
-        'monthly_deposit': monthly_deposit,
-        'monthly_budget': monthly_budget,
+        'combined_balance': combined_balance,
+        'daily_avg': daily_avg,
+        'spent_total': spent_total,
 
         # Deposit details
         'remaining_deposit': remaining_deposit,
+        'shared_food': shared_food,
+        'shared_grocery': shared_grocery,
+        'shared_utility': shared_utility,
+        'prev_shared_food': prev_shared_food,
+        'prev_shared_grocery':prev_shared_grocery,
+        'prev_shared_utility':prev_shared_utility,
     }
     return render(request, 'expenses/summary.html', context)
 
@@ -265,11 +258,14 @@ def export_expense_csv(request):
 
 
 @login_required
-def user_detail(request, id):
+def user_detail(request, user_id=None):
 
     month_range = range(1, 13)
 
-    selected_user = get_object_or_404(User, id=id)
+    if user_id is None:
+        selected_user = request.user
+    else:
+        selected_user = get_object_or_404(User, id=user_id)
 
     selected_month, selected_year = get_selected_period(request)
 

@@ -5,28 +5,30 @@ from django.db.models import Sum
 from django.shortcuts import render, redirect, get_object_or_404
 
 from expenses.forms import DepositForm
-from expenses.models import Deposit, Income, SHARED_CATEGORIES, Expense
+from expenses.models import Deposit, User
 from expenses.notifications import notify_user
 from expenses.services import get_user_stats
+from expenses.utils import get_int, get_selected_period
 
 
 @login_required
 def list_deposit(request):
-    deposit = Deposit.objects.select_related('user').all()
 
-    deposit_data = {}
+    users = User.objects.all()
+    month_range = range(1,13)
 
-    for item in deposit:
-        deposit_data[item.id] = {
-            'id': item.id,
-            'user': item.user,
-            'amount': item.amount,
-            'date': item.date,
-            'description': item.description
-        }
+    selected_user = get_int(request.GET.get('user'), request.user.id)
+    selected_month, selected_year = get_selected_period(request)
+
+    deposits = Deposit.objects.filter(user=selected_user, date__month=selected_month, date__year=selected_year)
 
     context = {
-        'deposit_data': deposit_data,
+        'users': users,
+        'month_range': month_range,
+        'deposits': deposits,
+        'selected_user': selected_user,
+        'selected_month': selected_month,
+        'selected_year': selected_year,
     }
     return render(request, 'deposit/deposit_list.html', context)
 

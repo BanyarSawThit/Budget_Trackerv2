@@ -23,7 +23,8 @@ urlpatterns = [
 
     # summary
     path('summary/', expense.summary, name='summary'),
-    path('summary/user/<int:id>', expense.user_detail, name='user_detail'),
+    path('user/', expense.user_detail, name='user_detail'),
+    path('user/<int:user_id>', expense.user_detail, name='user_detail_by_id'),
 
     # export
     path('export/expenses', expense.export_expense_csv, name='expose_expense'),

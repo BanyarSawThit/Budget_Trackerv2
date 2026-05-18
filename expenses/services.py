@@ -59,7 +59,7 @@ def get_user_stats(user, month, year):
         'income': income,
         'deposit': deposit,
         'personal_ex': expenses,
-        'balance': balance,
+        'net_balance': balance,
         'daily_expense_avg': daily_expense_avg,
     }
 
@@ -83,3 +83,13 @@ def get_opening_budget(user, month, year):
     expenses = Expense.objects.filter(user=user, date__lt=start_of_month).exclude(category__in=SHARED_CATEGORIES).aggregate(Sum("amount"))["amount__sum"] or 0
 
     return income - deposit - expenses
+
+def get_shared_expenses(month, year):
+
+    shared_expense = (Expense.objects.filter(category__in=SHARED_CATEGORIES, date__month=month, date__year=year))
+
+    shared_food = shared_expense.filter(category='food').aggregate(Sum('amount'))['amount__sum'] or 0
+    shared_grocery = shared_expense.filter(category='grocery').aggregate(Sum('amount'))['amount__sum'] or 0
+    shared_utility = shared_expense.filter(category='utility').aggregate(Sum('amount'))['amount__sum'] or 0
+
+    return shared_food, shared_grocery, shared_utility

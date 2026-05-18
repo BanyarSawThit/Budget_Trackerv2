@@ -21,17 +21,16 @@ def list_income(request):
     month_range = range(1,13)
 
     selected_user = get_int(request.GET.get('user'), request.user.id)
-
     selected_month, selected_year = get_selected_period(request)
 
     income = Income.objects.filter(user=selected_user, date__month=selected_month, date__year=selected_year)
     context = {
         'users': users,
-        'selected_user': selected_user,
         'month_range': month_range,
+        'incomes': income,
+        'selected_user': selected_user,
         'selected_month': selected_month,
         'selected_year': selected_year,
-        'incomes': income,
     }
     return render(request, 'income/income_list.html', context)
 

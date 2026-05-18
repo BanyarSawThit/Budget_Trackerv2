@@ -5,15 +5,26 @@
 
 <div class="container mt-3">
 
-    <!-- ROW 1: Total Expense Card -->
     <div class="row mb-3">
         <div class="col-12">
-            <div class="card card-budget shadow">
-                <div class="card-header text-center"><strong>Total Spent</strong></div>
-                <div class="card-body text-center">
-                    <h3 class="card-title text-value">{{ month_total|convert:rate }}</h3>
-                </div>
+            <div class="btn-group w-100 shadow" role="group">
+                <a href="?user=0"
+                   class="btn btn-sm
+                   {% if selected_user == 0 %} btn-light
+                   {% else %} btn-primary
+                   {% endif %}">All
+                </a>
 
+                {% for user in users %}
+
+                <a href="?user={{ user.id }}"
+                   class="btn btn-sm
+                   {% if user.id == selected_user %} btn-light
+                   {% else %} btn-primary
+                   {% endif %}">{{ user }}
+                </a>
+
+                {% endfor %}
             </div>
         </div>
     </div>
@@ -33,90 +44,11 @@
         </div>
     </div>
 
-    <!-- ROW 3: Quick Stats Cards -->
-    <div class="row mb-3">
-        <!-- Personal Expenses Card -->
-        <div class="col-6">
-            <div class="card card-budget shadow">
-                <div class="card-body text-center py-3">
-                    <small class="card-text text-muted mb-1">Personal</small>
-                    <h3 class="card-title text-value">{{ personal_total|convert:rate }}</h3>
-                </div>
-            </div>
-        </div>
-
-        <!-- Shared Expenses Card -->
-        <div class="col-6">
-            <div class="card card-deposit shadow">
-                <div class="card-body text-center py-3">
-                    <small class="card-text text-muted mb-1">Shared</small>
-                    <h3 class="card-title text-value">{{ shared_total|convert:rate }}</h3>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mb-3">
-        <div class="col-12">
-            <div class="card card-budget shadow">
-                <div class="card-header text-center">
-                    <strong>By Category</strong>
-                </div>
-                <div class="table-scroll">
-                    <div class="card-body p-0">
-                        <table class="table table-budget">
-                            <tbody>
-                            {% for key, values in top_cats.items %}
-                                <tr>
-                                    <td>{{key}}</td>
-                                    <td class="text-end fw-semibold">{{ values|convert:rate }}</td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Selectors -->
     <div class="row mb-3">
-        <!-- user selector -->
-        <div class="col-4">
-            <div class="dropdown shadow">
-                {% if selected_user == 0 %}
-                    <button class="btn btn-primary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        All
-                    </button>
-                {% else %}
-                    {% for user in users %}
-                        {% if user.id == selected_user %}
-                        <button class="btn btn-light dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            {{ user.username }}
-                        </button>
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
-                <ul class="dropdown-menu">
-                    <li>
-                        <a class="dropdown-item" href="?month={{ selected_month }}&year={{ selected_year }}&user=0 ">
-                            All
-                        </a>
-                    </li>
-                    {% for user in users %}
-                        <li>
-                            <a class="dropdown-item" href="?month={{ selected_month }}&year={{ selected_year }}&user={{ user.id }}">
-                                {{ user.username}}
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
 
         <!--category selector-->
-        <div class="col-4">
+        <div class="col-8">
             <div class="dropdown shadow">
                 <button class="btn btn-primary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
                     {% if selected_category %}
@@ -148,13 +80,6 @@
             </div>
         </div>
     </div>
-
-    <div class="row mb-3">
-        <div class="col-12">
-            <input type="search" id="searchBox" class="form-control shadow" placeholder="Search description..." value="{{ selected_search }}">
-        </div>
-    </div>
-
 
     <!-- ROW 3: Transaction List -->
     <div class="row mb-5">
@@ -222,19 +147,5 @@
     </div>
 
 </div>
-<script>
-    const searchBox = document.getElementById('searchBox');
-    let debounceTimer;
-    searchBox.addEventListener('input', function () {
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => {
-            const params = new URLSearchParams(window.location.search);
-            params.set('search', this.value);
-            params.set('month', '{{ selected_month }}');
-            params.set('year', '{{ selected_year }}');
-            params.set('user', '{{ selected_user }}');
-            window.location.search = params.toString();
-        }, 500); // waits 500ms after user stops typing
-    });
-</script>
+
 {% endblock %}

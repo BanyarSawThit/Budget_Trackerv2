@@ -435,3 +435,33 @@ header {
 .dropdown-item:hover {
     background: var(--budget-light);
 }
+
+.stat-pill {
+    background: var(--bg-page);
+    border-radius: 0.375rem;
+    padding: 0.25rem;
+}
+
+.stat-pill-label {
+    font-size: 0.65rem;
+    margin-bottom: 0.25rem;
+}
+
+.stat-pill-value {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.budget-progress-track {
+    height: 8px;
+}
+
+a.card {
+    cursor: pointer;
+    transition: transform 0.4s ease-in-out;
+}
+
+a.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15) !important;
+}

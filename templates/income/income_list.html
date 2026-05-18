@@ -22,7 +22,7 @@
         <div class="cold-12">
             <div class="btn-group w-100 shadow" role="group">
                 {% for month in month_range %}
-                <a href="?month={{ month }}"
+                <a href="?month={{ month }}&year={{ year }}"
                    class="btn btn-sm
                    {% if month == selected_month  %} btn-light
                    {% else %} btn-primary
