@@ -28,7 +28,6 @@ def expense_list(request):
     year_range = range(current_year - 2, current_year + 3)
 
     selected_month, selected_year = get_selected_period(request)
-    selected_month_name = month_name[selected_month]
 
     selected_user = get_int(request.GET.get('user'), 0)
     selected_category = request.GET.get('category', '')
@@ -43,6 +42,8 @@ def expense_list(request):
 
     if selected_category:
         expenses = expenses.filter(category=selected_category)
+
+    print(selected_user)
 
     context = {
         'expenses': expenses,
@@ -260,12 +261,18 @@ def export_expense_csv(request):
 @login_required
 def user_detail(request, user_id=None):
 
+    users = User.objects.all()
+
     month_range = range(1, 13)
 
     if user_id is None:
-        selected_user = request.user
+        selected_user = get_int(request.GET.get('user'), request.user.id)
+        print('000')
+        print(selected_user)
     else:
-        selected_user = get_object_or_404(User, id=user_id)
+        selected_user = get_object_or_404(User, id=user_id).id
+        print('--')
+        print(selected_user)
 
     selected_month, selected_year = get_selected_period(request)
 
@@ -282,8 +289,11 @@ def user_detail(request, user_id=None):
     incomes = (Income.objects
                .filter(user=selected_user, date__month=selected_month, date__year=selected_year))
 
+    print(selected_user)
+
     context = {
-        'user': selected_user,
+        'users': users,
+        'selected_user': selected_user,
         'month_name': selected_month_name,
         'month_range': month_range,
         'selected_month': selected_month,

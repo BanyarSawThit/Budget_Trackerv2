@@ -1,6 +1,8 @@
 from django.contrib import admin
 
 from . import models
+from .models import SavingWithdrawal, Saving, SavingGoal
+
 
 # Register your models here.
 @admin.register(models.Expense)
@@ -19,3 +21,4 @@ class DepositAdmin(admin.ModelAdmin):
 class ShoppingAdmin(admin.ModelAdmin):
     list_display = ['item']
 
+admin.site.register((Saving, SavingWithdrawal, SavingGoal))

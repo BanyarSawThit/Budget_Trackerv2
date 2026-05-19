@@ -6,13 +6,28 @@
 <div class="container mt-3">
 
     <!-- Row 1: Name Card -->
-    <div class="row mb-3 justify-content-center">
+    <div class="row mb-3">
         <div class="col-12">
             <div class="card card-budget shadow">
-                <div class="card-header text-center text-label">{{ user }}'s Balance Left</div>
+                <div class="card-header text-center">{{ user.username }}'s Balance</div>
                 <div class="card-body text-center">
                     <h3 class="card-title text-value">{{ user_stats.net_balance|convert:rate }}</h3>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="btn-group w-100 shadow" role="group">
+                {% for user in users %}
+                <a href="?user= {{ user.id }}"
+                   class="btn btn-sm
+                   {% if user.id == selected_user %} btn-light
+                   {% else %} btn-primary
+                   {% endif %}"> {{user.username}}
+                </a>
+                {% endfor  %}
             </div>
         </div>
     </div>
