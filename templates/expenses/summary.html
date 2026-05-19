@@ -71,7 +71,7 @@
                     <!-- Header: name + detail button -->
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="fw-semibold">{{ item.user.username }}</span>
-                        <a href="{% url 'user_detail' %}" class="btn btn-sm btn-light shadow-sm">Detail</a>
+                        <a href="{% url 'user_detail_by_id' item.user.id %}" class="btn btn-sm btn-light shadow-sm">Detail</a>
                     </div>
                 </div>
 
