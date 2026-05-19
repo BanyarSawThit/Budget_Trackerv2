@@ -267,12 +267,8 @@ def user_detail(request, user_id=None):
 
     if user_id is None:
         selected_user = get_int(request.GET.get('user'), request.user.id)
-        print('000')
-        print(selected_user)
     else:
         selected_user = get_object_or_404(User, id=user_id).id
-        print('--')
-        print(selected_user)
 
     selected_month, selected_year = get_selected_period(request)
 
@@ -288,8 +284,6 @@ def user_detail(request, user_id=None):
 
     incomes = (Income.objects
                .filter(user=selected_user, date__month=selected_month, date__year=selected_year))
-
-    print(selected_user)
 
     context = {
         'users': users,
