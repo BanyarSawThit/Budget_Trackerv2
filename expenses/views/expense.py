@@ -97,7 +97,7 @@ def add_expense(request):
                     deposit=deposit,
                 )
             else:
-                budget = user_stats['balance'] - expense.amount
+                budget = user_stats['net_balance'] - expense.amount
                 notify_user(
                     added_by_username=request.user.username,
                     amount=expense.amount,
