@@ -8,15 +8,11 @@
     <div class="row mb-3">
         <div class="col-12">
             <div class="card card-deposit shadow">
-                <div class="card-header text-center">
+                <div class="card-header">
                     <strong>{{ current_month }} Deposit Total</strong>
                 </div>
                 <div class="card-body">
-                    <div class="row text-center">
-                        <div class="col-12">
-                            <h3 class="text-value">{{ current_month_deposit_amount|convert:rate }}</h3>
-                        </div>
-                    </div>
+                    <h3 class="text-value text-center">{{ user_stats.income|convert:rate }}</h3>
                 </div>
             </div>
         </div>
@@ -27,7 +23,7 @@
         <div class="col-12">
             <div class="card card-deposit shadow-sm">
                 <div class="card-header">
-                    <h5 class="mb-0">💰 Add Deposit</h5>
+                    <h5 class="mb-0">Add Deposit</h5>
                 </div>
                 <div class="card-body">
                     <form method="post">
@@ -44,18 +40,27 @@
     <div class="row mb-3">
         <div class="col-12">
             <div class="card card-deposit shadow">
-                <div class="card-header text-center">
-                    <strong>Deposit Record</strong>
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Deposit</span>
+                        <a href="{% url 'deposit_list' %}" class="btn btn-sm btn-deposit shadow-sm">History</a>
+                    </div>
                 </div>
                 <div class="card-body p-0">
                     <table class="table table-deposit">
                         <tbody>
-                        {% for item in deposit_data.values %}
+                        {% for item in deposits %}
                             <tr>
                                 <td>{{ item.date|date:"d" }}</td>
                                 <td>{{ item.user }}</td>
                                 <td>{{ item.description|default:"-" }}</td>
                                 <td class="text-end fw-semibold">{{ item.amount|convert:rate }}</td>
+                                <td>
+                                    <div class="text-end">
+                                        <a href="{% url 'edit_deposit' item.id %}" class="btn btn-sm btn-warning">Edit</a>
+                                        <a href="{% url 'delete_deposit' item.id %}" class="btn btn-sm btn-danger">Delete</a>
+                                    </div>
+                                </td>
                             </tr>
                         {% empty %}
                             <tr>
@@ -71,13 +76,10 @@
 
     <!-- Action Buttons -->
     <div class="row mb-5 g-2">
-        <div class="col-3">
-            <a href="{% url 'summary' %}" class="btn btn-primary w-100 g-2">Back</a>
+        <div class="col-6">
+            <a href="{% url 'add_expense' %}" class="btn btn-primary w-100 g-2">ADD</a>
         </div>
         <div class="col-6">
-            <a href="{% url 'deposit_list' %}" class="btn btn-deposit w-100">All</a>
-        </div>
-        <div class="col-3">
             <a href="{% url 'add_income' %}" class="btn btn-income w-100">Income</a>
         </div>
     </div>

@@ -4,6 +4,25 @@
 {% block content %}
 <div class="container mt-3">
 
+    <!-- ROW 1: Total Deposit Overview -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card card-deposit shadow">
+                <div class="card-header">
+                    <strong>Deposit Total</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-12">
+                            <h3 class="text-value">{{ user_stats.income|convert:rate }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <div class="row mb-3">
         <div class="col-12">
             <div class="btn-group w-100 shadow" role="group">
@@ -35,6 +54,9 @@
     <div class="row mb-3">
         <div class="col-12">
             <div class="card card-deposit">
+
+                <div class="card-header">Deposit List</div>
+
                 <div class="card-body p-0">
                     <table class="table table-deposit">
                         <tbody>

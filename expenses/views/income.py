@@ -1,7 +1,4 @@
-from decimal import Decimal
-
 from django.contrib.auth.decorators import login_required
-from django.db.models import Sum
 from datetime import date
 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -11,7 +8,7 @@ from expenses.models import Income, User
 
 from expenses.notifications import notify_user
 from expenses.services import get_user_stats
-from expenses.utils import get_int, get_selected_period
+from expenses.utils import get_int, get_selected_period, get_selected_user
 
 
 @login_required
@@ -20,12 +17,14 @@ def list_income(request):
     users = User.objects.all()
     month_range = range(1,13)
 
-    selected_user = get_int(request.GET.get('user'), request.user.id)
+    selected_user_id = get_selected_user(request)
+    selected_user = get_object_or_404(User, id=selected_user_id)
     selected_month, selected_year = get_selected_period(request)
 
     income = Income.objects.filter(user=selected_user, date__month=selected_month, date__year=selected_year)
     context = {
         'users': users,
+        'user_stats': get_user_stats(selected_user, selected_month, selected_year),
         'month_range': month_range,
         'incomes': income,
         'selected_user': selected_user,
@@ -38,26 +37,11 @@ def list_income(request):
 @login_required
 def add_income(request):
 
+
     current_user = request.user
-    income_qs = Income.objects.select_related('user').all()
-    current_month_income_amount = (income_qs
-                         .filter(user=current_user,
-                                 date__month=date.today().month,
-                                 date__year=date.today().year)
-                         .aggregate(Sum('amount'))['amount__sum'] or 0)
-    current_month_income_list = income_qs.filter(user=current_user, date__month=date.today().month
-                                              ,date__year=date.today().year)
+    current_month, current_year = date.today().month, date.today().year
 
-    income_data = {}
-
-    for item in current_month_income_list:
-        income_data[item.id] = {
-            'id': item.id,
-            'user': item.user,
-            'amount': item.amount,
-            'date': item.date,
-            'description': item.description
-        }
+    incomes = Income.objects.filter(user=current_user, date__month=current_month, date__year=current_year)
 
     if request.method == 'POST':
         form = IncomeForm(request.POST)
@@ -66,7 +50,6 @@ def add_income(request):
             new_income.user = current_user
             new_income.save()
 
-            # Add to User's budget
             user_stats = get_user_stats(current_user, date.today().month, date.today().year)
 
             notify_user(
@@ -84,8 +67,8 @@ def add_income(request):
     context = {
         'form': form,
         'current_month': date.today().strftime("%B"),
-        'current_month_income_amount': current_month_income_amount,
-        'income_data': income_data,
+        'user_stats': get_user_stats(current_user, current_month, current_year),
+        'incomes': incomes,
 
     }
     return render(request, 'income/add_income.html', context)

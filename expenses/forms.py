@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Expense, Income, Deposit, ShoppingItem
+from .models import Expense, Income, Deposit, ShoppingItem, Saving, SavingWithdrawal
 
 
 class ExpenseForm(forms.ModelForm):
@@ -66,6 +66,34 @@ class DepositForm(forms.ModelForm):
             raise forms.ValidationError("Amount must be greater than 0")
         return amount
 
+class SavingForm(forms.ModelForm):
+    class Meta:
+        model = Saving
+        fields = ['amount', 'goal', 'description']
+        widgets = {
+            'amount': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': '0'}),
+            'goal': forms.Select(attrs={'class': 'form-select'}),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 1,
+                'placeholder': 'Note...',
+            })
+        }
+
+class WithdrawForm(forms.ModelForm):
+    class Meta:
+        model = SavingWithdrawal
+        fields = ['amount', 'goal', 'description']
+        widgets = {
+            'amount': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': '0'}),
+            'goal': forms.Select(attrs={'class': 'form-select'}),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 1,
+                'placeholder': 'Note...',
+            })
+        }
+
 class ShoppingForm(forms.ModelForm):
     class Meta:
         model = ShoppingItem
@@ -80,3 +108,4 @@ class ShoppingForm(forms.ModelForm):
                 'placeholder': '1. ...\n2. ...',
             }),
         }
+

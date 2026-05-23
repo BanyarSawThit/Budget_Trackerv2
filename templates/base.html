@@ -33,7 +33,7 @@
         <div class="container-fluid">
             <div class="row text-center w-100 m-0">
                 <div class="col">
-                    <a class="fw-bold nav-link rounded {% if request.resolver_match.url_name == 'user_detail' or request.resolver_match.url_name == 'user_detail_by_id' %}active{% endif %}" href="{% url 'user_detail' %}">User</a>
+                    <a class="fw-bold nav-link rounded {% if request.resolver_match.url_name == 'user_detail' %}active{% endif %}" href="{% url 'user_detail' %}">User</a>
                 </div>
                 <div class="col">
                     <a class="fw-bold nav-link rounded {% if request.resolver_match.url_name == 'add_expense' %}active{% endif %}" href="{% url 'add_expense' %}">ADD</a>

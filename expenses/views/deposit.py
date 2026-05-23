@@ -1,14 +1,13 @@
 from datetime import date
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import Sum
 from django.shortcuts import render, redirect, get_object_or_404
 
 from expenses.forms import DepositForm
 from expenses.models import Deposit, User
 from expenses.notifications import notify_user
 from expenses.services import get_user_stats
-from expenses.utils import get_int, get_selected_period
+from expenses.utils import get_int, get_selected_period, get_selected_user
 
 
 @login_required
@@ -17,7 +16,7 @@ def list_deposit(request):
     users = User.objects.all()
     month_range = range(1,13)
 
-    selected_user = get_int(request.GET.get('user'), request.user.id)
+    selected_user = get_selected_user(request)
     selected_month, selected_year = get_selected_period(request)
 
     deposits = Deposit.objects.filter(user=selected_user, date__month=selected_month, date__year=selected_year)
@@ -25,6 +24,7 @@ def list_deposit(request):
     context = {
         'users': users,
         'month_range': month_range,
+        'user_stats': get_user_stats(selected_user, selected_month, selected_year),
         'deposits': deposits,
         'selected_user': selected_user,
         'selected_month': selected_month,
@@ -37,24 +37,9 @@ def list_deposit(request):
 def add_deposit(request):
 
     current_user = request.user
-    deposit_qs = Deposit.objects.select_related('user').all()
-    current_month_deposit_amount = (deposit_qs
-                         .filter(user=current_user,
-                                 date__month=date.today().month,
-                                 date__year=date.today().year)
-                         .aggregate(Sum('amount'))['amount__sum'] or 0)
-    current_month_deposit_list = deposit_qs.filter(date__month=date.today().month,
-                                                date__year=date.today().year)
+    current_month, current_year = date.today().month, date.today().year
 
-    deposit_data = {}
-    for item in current_month_deposit_list:
-        deposit_data[item.id] = {
-            'id': item.id,
-            'user': item.user,
-            'amount': item.amount,
-            'date': item.date,
-            'description': item.description
-        }
+    deposits = Deposit.objects.filter(user=current_user, date__month=current_month, date__year=current_year)
 
     if request.method == 'POST':
         form = DepositForm(request.POST)
@@ -64,10 +49,10 @@ def add_deposit(request):
             new_deposit.save()
 
             # Get user budget
-            user_stats = get_user_stats(current_user, date.today().month, date.today().year)
+            user_stats = get_user_stats(current_user, current_month, current_year)
 
             notify_user(
-                added_by_username=current_user.username,
+                added_by_username=request.user.username,
                 amount=new_deposit.amount,
                 category="Deposit",
                 description=new_deposit.description,
@@ -81,8 +66,8 @@ def add_deposit(request):
     context = {
         'form': form,
         'current_month': date.today().strftime("%B"),
-        'current_month_deposit_amount': current_month_deposit_amount,
-        'deposit_data': deposit_data,
+        'user_stats': get_user_stats(current_user, current_month, current_year),
+        'deposits': deposits,
     }
     return render(request, 'deposit/add_deposit.html', context)
 

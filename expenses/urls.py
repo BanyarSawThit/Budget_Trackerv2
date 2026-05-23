@@ -1,6 +1,6 @@
 from django.urls import path, include
 
-from .views import deposit, expense, income, shopping
+from .views import deposit, expense, income, shopping, saving, withdraw
 
 urlpatterns = [
     #expense
@@ -21,10 +21,21 @@ urlpatterns = [
     path('deposit/edit/<int:id>', deposit.edit_deposit, name='edit_deposit'),
     path('deposit/delete/<int:id>', deposit.delete_deposit, name='delete_deposit'),
 
+    # saving
+    path('saving/', saving.list_saving, name='saving_list'),
+    path('saving/add/', saving.add_saving, name='add_saving'),
+    path('saving/edit/<int:id>', saving.edit_saving, name='edit_saving'),
+    path('saving/delete/<int:id>', saving.delete_saving, name='delete_saving'),
+
+    # withdraw
+    path('withdraw/', withdraw.list_withdraw, name='withdraw_list'),
+    path('withdraw/add/', withdraw.add_withdraw, name='add_withdraw'),
+    path('withdraw/edit/<int:id>', withdraw.edit_withdraw, name='edit_withdraw'),
+    path('withdraw/delete/<int:id>', withdraw.delete_withdraw, name='delete_withdraw'),
+
     # summary
     path('summary/', expense.summary, name='summary'),
     path('user/', expense.user_detail, name='user_detail'),
-    path('user/<int:user_id>', expense.user_detail, name='user_detail_by_id'),
 
     # export
     path('export/expenses', expense.export_expense_csv, name='expose_expense'),

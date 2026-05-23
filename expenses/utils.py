@@ -22,4 +22,9 @@ def get_selected_period(request):
 
     return selected_month, selected_year
 
+def get_selected_user(request):
 
+    session_user = request.session.get('user', request.user.id)
+    selected_user = get_int(request.GET.get('user'), session_user)
+    request.session['user'] = selected_user
+    return selected_user

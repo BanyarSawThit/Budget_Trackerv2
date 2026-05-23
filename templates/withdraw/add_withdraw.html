@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load currency_filter %}
+
+{% block content %}
+
+<div class="container mt-3">
+
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card card-budget shadow">
+                <div class="card-header">Total Saving</div>
+                <div class="card-body">
+                    <div class="text-value text-center">{{ total_saving }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Withdraw Form -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card card-budget shadow">
+                <div class="card-header">Add Withdrawal</div>
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-primary btn-lg w-100">Withdraw</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Saving -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <a href="{% url 'add_saving' %}" class="btn btn-lg btn-secondary w-100 shadow">Back to Saving</a>
+        </div>
+    </div>
+
+    <!-- This Month's Withdrawals -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card card-budget shadow">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>{{ current_month }} Withdrawals</span>
+                        <a href="{% url 'withdraw_list' %}" class="btn btn-sm btn-light shadow-sm">History</a>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-budget">
+                        <tbody>
+                        {% for item in withdrawals %}
+                            <tr>
+                                <td>{{ item.date|date:"d" }}</td>
+                                <td>{{ item.amount|convert:rate }}</td>
+                                <td>{{ item.goal }}</td>
+                                <td>
+                                    <div class="text-end">
+                                        <a href="{% url 'edit_withdraw' item.id %}" class="btn btn-sm btn-warning">Edit</a>
+                                        <a href="{% url 'delete_withdraw' item.id %}" class="btn btn-sm btn-danger">Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-3">No withdrawals this month</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

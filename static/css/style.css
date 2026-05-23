@@ -49,12 +49,14 @@ body {
 .card-budget {
     background-color: var(--budget-light);
     border: none;
+    text-decoration: none;
 }
 
 .card-budget .card-header {
     background-color: var(--budget-header);
     color: var(--text-dark);
     font-weight: 600;
+    text-align: center;
 }
 
 .card-budget-primary {
@@ -76,18 +78,21 @@ body {
     background-color: var(--spending-header);
     color: var(--text-dark);
     font-weight: 600;
+    text-align: center;
 }
 
 /* Deposit Cards */
 .card-deposit {
     background-color: var(--deposit-light);
     border: none;
+    text-decoration: none;
 }
 
 .card-deposit .card-header {
     background-color: var(--deposit-header);
     color: var(--text-dark);
     font-weight: 600;
+    text-align: center;
 }
 
 .card-deposit-primary {
@@ -98,12 +103,14 @@ body {
 .card-income {
     background-color: var(--income-light);
     border: none;
+    text-decoration: none;
 }
 
 .card-income .card-header {
     background-color: var(--income-header);
     color: var(--text-dark);
     font-weight: 600;
+    text-align: center;
 }
 
 .card-income-primary {
@@ -435,7 +442,6 @@ header {
 .dropdown-item:hover {
     background: var(--budget-light);
 }
-
 .stat-pill {
     background: var(--bg-page);
     border-radius: 0.375rem;

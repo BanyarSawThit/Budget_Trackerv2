@@ -8,7 +8,7 @@
     <div class="row mb-3">
         <div class="col-12">
             <div class="card card-budget shadow">
-                <div class="card-header text-center">Total Balance</div>
+                <div class="card-header">Total Balance</div>
                 <div class="card-body">
                     <div class="row text-center">
                         <div class="col-12">
@@ -44,19 +44,19 @@
     <div class="row mb-3">
         <div class="col-6">
             <div class="card card-deposit shadow">
-                <div class="card-header text-center text-label">Daily Average</div>
+                <div class="card-header text-label">All Daily Avg</div>
                 <div class="card-body text-center py-3">
                     <h3 class="card-title text-value">{{ daily_avg|convert:rate }}</h3>
                 </div>
             </div>
         </div>
         <div class="col-6">
-            <div class="card card-deposit shadow">
-                <div class="card-header text-center text-label">Total Spent</div>
+            <a href="{% url 'user_detail' %}" class="card card-deposit shadow">
+                <div class="card-header text-label">All Total Spent</div>
                 <div class="card-body text-center">
                     <h3 class="card-title text-value">{{ spent_total|convert:rate }}</h3>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 
@@ -71,7 +71,7 @@
                     <!-- Header: name + detail button -->
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="fw-semibold">{{ item.user.username }}</span>
-                        <a href="{% url 'user_detail_by_id' item.user.id %}" class="btn btn-sm btn-light shadow-sm">Detail</a>
+                        <a href="{% url 'user_detail' %}?user={{ item.user.id }}" class="btn btn-sm btn-light shadow-sm">Detail</a>
                     </div>
                 </div>
 
@@ -92,7 +92,7 @@
                             </div>
                         </div>
                         <div class="col-4">
-                            <div class="p-1 rounded" style="background: var(--bs-light, #f8f9fa);">
+                            <div class="stat-pill">
                                 <div class="stat-pill-label">Budget</div>
                                 <div class="stat-pill-value">{{ item.available_budget|convert:rate }}</div>
                             </div>
@@ -131,7 +131,7 @@
     <div class="row mb-3">
         <div class="col-12">
             <div class="card card-deposit shadow">
-                <div class="card-header text-center">Deposit Left</div>
+                <div class="card-header">Deposit Left</div>
                 <div class="card-body">
                     <div class="row text-center">
                         <div class="col-12">
@@ -146,7 +146,7 @@
     <div class="row mb-3">
         <div class="col-12">
             <div class="card card-deposit shadow-sm">
-                <div class="card-header">Deposit Overview</div>
+                <div class="card-header text-start">Deposit Overview</div>
                 <div class="card-body p-0">
                     <table class="table table-deposit mb-0">
                         <tbody>
@@ -179,13 +179,20 @@
 
     <!-- Action Buttons -->
     <div class="row mb-3">
-        <div class="col-6">
-            <a href="{% url 'add_income' %}" class="btn btn-income w-100 shadow">
+        <div class="col-4">
+            <a href="{% url 'income_list' %}" class="btn btn-income w-100 shadow">
                 Income
             </a>
         </div>
-        <div class="col-6">
-            <a href="{% url 'add_deposit' %}" class="btn btn-deposit w-100 shadow">
+
+        <div class="col-4">
+            <a href="{% url 'saving_list' %}" class="btn btn-primary w-100 shadow">
+                Saving
+            </a>
+        </div>
+
+        <div class="col-4">
+            <a href="{% url 'deposit_list' %}" class="btn btn-deposit w-100 shadow">
                 Deposit
             </a>
         </div>

@@ -5,7 +5,7 @@ from decimal import Decimal
 
 from django.db.models import Sum
 
-from expenses.models import Income, Deposit, Expense, SHARED_CATEGORIES
+from expenses.models import Income, Deposit, Expense, SHARED_CATEGORIES, Saving, SavingWithdrawal
 
 
 def get_user_stats(user, month, year):
@@ -65,7 +65,6 @@ def get_user_stats(user, month, year):
 
 def get_deposit(month, year):
 
-
     deposit = (Deposit.objects.filter(date__month=month, date__year=year)
                .aggregate(Sum("amount"))["amount__sum"] or 0)
 
@@ -73,6 +72,11 @@ def get_deposit(month, year):
                     .aggregate(Sum("amount"))["amount__sum"] or 0)
 
     return deposit - shared_spent
+
+def get_saving(user):
+    saved = Saving.objects.filter(user=user).aggregate(Sum('amount'))['amount__sum'] or 0
+    withdrawn = SavingWithdrawal.objects.filter(user=user).aggregate(Sum('amount'))['amount__sum'] or 0
+    return saved - withdrawn
 
 def get_opening_budget(user, month, year):
 

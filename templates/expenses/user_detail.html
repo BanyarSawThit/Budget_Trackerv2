@@ -9,7 +9,7 @@
     <div class="row mb-3">
         <div class="col-12">
             <div class="card card-budget shadow">
-                <div class="card-header text-center">{{ user.username }}'s Balance</div>
+                <div class="card-header">{{ selected_user.username }}'s Balance</div>
                 <div class="card-body text-center">
                     <h3 class="card-title text-value">{{ user_stats.net_balance|convert:rate }}</h3>
                 </div>
@@ -17,13 +17,14 @@
         </div>
     </div>
 
+    <!-- user selector-->
     <div class="row mb-3">
         <div class="col-12">
             <div class="btn-group w-100 shadow" role="group">
                 {% for user in users %}
-                <a href="?user= {{ user.id }}"
+                <a href="?user={{ user.id }}"
                    class="btn btn-sm
-                   {% if user.id == selected_user %} btn-light
+                   {% if user.id == selected_user.id %} btn-light
                    {% else %} btn-primary
                    {% endif %}"> {{user.username}}
                 </a>
@@ -37,7 +38,7 @@
         <div class="col-12">
             <div class="btn-group w-100 shadow" role="group">
                 {% for month_num in month_range %}
-                <a href="?month={{ month_num }}"
+                <a href="?month={{ month_num }}&year={{ selected_year }}"
                    class="btn btn-sm
                    {% if month_num == selected_month %}
                    btn-light
@@ -54,7 +55,7 @@
     <div class="row mb-3">
         <div class="col-6">
             <div class="card card-budget shadow">
-                <div class="card-header text-center text-label">Available Budget</div>
+                <div class="card-header text-label">Available Budget</div>
                 <div class="card-body text-center">
                     <h3 class="card-title text-value">{{ available_budget|convert:rate }}</h3>
                 </div>
@@ -62,12 +63,12 @@
         </div>
 
         <div class="col-6">
-            <div class="card card-budget shadow">
-                <div class="card-header text-center text-label">Saving</div>
+            <a href="{% url 'saving_list' %}" class="card card-budget shadow d-block">
+                <div class="card-header text-label">Saving</div>
                 <div class="card-body text-center">
-                    <h3 class="card-title text-value">0</h3>
+                    <h3 class="card-title text-value">{{ all_saving_total }}</h3>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 
@@ -75,7 +76,7 @@
     <div class="row mb-3">
         <div class="col-6">
             <div class="card card-spending shadow">
-                <div class="card-header text-center text-label">Daily Avg</div>
+                <div class="card-header text-label">Daily Avg</div>
                 <div class="card-body text-center">
                     <h3 class="card-title text-value">{{ user_stats.daily_expense_avg|convert:rate }}</h3>
                 </div>
@@ -84,7 +85,7 @@
 
         <div class="col-6">
             <div class="card card-spending shadow">
-                <div class="card-header text-center text-label">Spent</div>
+                <div class="card-header text-label">Spent</div>
                 <div class="card-body text-center">
                     <h3 class="card-title text-value">{{ user_stats.personal_ex|convert:rate }}</h3>
                 </div>
@@ -96,7 +97,7 @@
     <div class="row mb-3">
         <div class="col-12">
             <div class="card card-spending shadow-sm">
-                <div class="card-header">Personal Spending</div>
+                <div class="card-header text-start">Personal Spending</div>
             </div>
             <div class="table-scroll">
                 <div class="card-body p-0">
@@ -120,8 +121,8 @@
     <!-- Row 5: Spending Review-->
     <div class="row mb-3">
         <div class="col-6">
-            <a href="{% url 'add_income' %}" class="card card-income shadow text-decoration-none d-block">
-                <div class="card-header text-center text-label">Income</div>
+            <a href="{% url 'income_list' %}" class="card card-income shadow d-block">
+                <div class="card-header text-label">Income</div>
                 <div class="card-body text-center">
                     <h3 class="card-title text-value">{{ user_stats.income|convert:rate }}</h3>
                 </div>
@@ -129,8 +130,8 @@
         </div>
 
         <div class="col-6">
-            <a href="{% url 'add_deposit' %}" class="card card-deposit shadow text-decoration-none d-block">
-                <div class="card-header text-center text-label">Deposit</div>
+            <a href="{% url 'deposit_list' %}" class="card card-deposit shadow d-block">
+                <div class="card-header text-label">Deposit</div>
                 <div class="card-body text-center">
                     <h3 class="card-title text-value">{{ user_stats.deposit|convert:rate }}</h3>
                 </div>

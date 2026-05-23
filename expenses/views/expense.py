@@ -1,9 +1,7 @@
 import calendar
 import csv
 from decimal import Decimal
-from unicodedata import category
 
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from datetime import date, datetime
@@ -16,8 +14,8 @@ from expenses.forms import ExpenseForm
 from expenses.models import Expense, User, Income, SHARED_CATEGORIES, Deposit, CATEGORY_CHOICES
 
 from expenses.notifications import notify_user
-from expenses.services import get_user_stats, get_deposit, get_opening_budget, get_shared_expenses
-from expenses.utils import get_int, get_selected_period
+from expenses.services import get_user_stats, get_deposit, get_opening_budget, get_shared_expenses, get_saving
+from expenses.utils import get_int, get_selected_period, get_selected_user
 
 
 @login_required
@@ -42,8 +40,6 @@ def expense_list(request):
 
     if selected_category:
         expenses = expenses.filter(category=selected_category)
-
-    print(selected_user)
 
     context = {
         'expenses': expenses,
@@ -259,19 +255,15 @@ def export_expense_csv(request):
 
 
 @login_required
-def user_detail(request, user_id=None):
+def user_detail(request):
 
     users = User.objects.all()
-
     month_range = range(1, 13)
 
-    if user_id is None:
-        selected_user = get_int(request.GET.get('user'), request.user.id)
-    else:
-        selected_user = get_object_or_404(User, id=user_id).id
+    selected_user_id = get_selected_user(request)
+    selected_user = get_object_or_404(User, id=selected_user_id)
 
     selected_month, selected_year = get_selected_period(request)
-
     selected_month_name = month_name[selected_month]
 
     user_stats = get_user_stats(selected_user, selected_month, selected_year)
@@ -288,11 +280,16 @@ def user_detail(request, user_id=None):
     context = {
         'users': users,
         'selected_user': selected_user,
+        'selected_month': selected_month,
+        'selected_year': selected_year,
+
         'month_name': selected_month_name,
         'month_range': month_range,
-        'selected_month': selected_month,
+
         'user_stats': user_stats,
         'available_budget': available_budget,
+        'all_saving_total': get_saving(selected_user),
+
         'expenses': expenses,
         'incomes': incomes,
 

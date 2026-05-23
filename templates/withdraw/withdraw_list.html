@@ -4,17 +4,15 @@
 {% block content %}
 <div class="container mt-3">
 
-    <!-- ROW 1: Total Income Overview -->
+    <!-- Total -->
     <div class="row mb-3">
         <div class="col-12">
-            <div class="card card-income shadow">
-                <div class="card-header">
-                    <strong>Income Total</strong>
-                </div>
+            <div class="card card-budget shadow">
+                <div class="card-header"><strong>Withdrawal Total</strong></div>
                 <div class="card-body">
                     <div class="row text-center">
                         <div class="col-12">
-                            <h3 class="text-value">{{ user_stats.income|convert:rate }}</h3>
+                            <h3 class="text-value">{{ withdraw_total|convert:rate }}</h3>
                         </div>
                     </div>
                 </div>
@@ -22,14 +20,14 @@
         </div>
     </div>
 
-
+    <!-- User Filter -->
     <div class="row mb-3">
-        <div class="cold-12">
+        <div class="col-12">
             <div class="btn-group w-100 shadow" role="group">
                 {% for user in users %}
                 <a href="?user={{ user.id }}"
                    class="btn btn-sm
-                   {% if user.id == selected_user.id  %} btn-light
+                   {% if user.id == selected_user %} btn-light
                    {% else %} btn-primary
                    {% endif %}">{{ user.username }}</a>
                 {% endfor %}
@@ -37,13 +35,14 @@
         </div>
     </div>
 
+    <!-- Month Filter -->
     <div class="row mb-3">
-        <div class="cold-12">
-            <div class="btn-group w-100 shadow" role="group">
+        <div class="col-12">
+            <div class="btn-group w-100" role="group">
                 {% for month in month_range %}
-                <a href="?month={{ month }}&year={{ year }}"
+                <a href="?month={{ month }}&year={{ selected_year }}"
                    class="btn btn-sm
-                   {% if month == selected_month  %} btn-light
+                   {% if month == selected_month %} btn-light
                    {% else %} btn-primary
                    {% endif %}">{{ month }}</a>
                 {% endfor %}
@@ -51,26 +50,28 @@
         </div>
     </div>
 
+    <!-- Withdrawal List -->
     <div class="row mb-3">
         <div class="col-12">
-            <div class="card card-income">
+            <div class="card card-budget">
+                <div class="card-header">Withdrawal List</div>
                 <div class="card-body p-0">
-                    <table class="table table-income mb-0">
+                    <table class="table table-budget">
                         <tbody>
-                        {% for item in incomes %}
+                        {% for item in withdrawals %}
                             <tr>
-                                <td>
-                                    <a href="{% url 'edit_income' item.id %}" class="btn btn-sm btn-warning">Edit</a>
-                                    <a href="{% url 'delete_income' item.id %}" class="btn btn-sm btn-danger">Delete</a>
-                                </td>
                                 <td>{{ item.date|date:"d" }}</td>
+                                <td>{{ item.goal }}</td>
                                 <td class="text-end fw-semibold">{{ item.amount|convert:rate }}</td>
                                 <td>{{ item.description|default:"-" }}</td>
-
+                                <td class="text-center">
+                                    <a href="{% url 'edit_withdraw' item.id %}" class="btn btn-sm btn-warning">Edit</a>
+                                    <a href="{% url 'delete_withdraw' item.id %}" class="btn btn-sm btn-danger">Delete</a>
+                                </td>
                             </tr>
                         {% empty %}
                             <tr>
-                                <td colspan="5" class="text-center text-muted py-3">No incomes yet</td>
+                                <td colspan="5" class="text-center text-muted py-3">No withdrawals yet</td>
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -80,18 +81,15 @@
         </div>
     </div>
 
-    <!-- Navigation Buttons -->
-    <div class="row mb-5">
+    <!-- Nav Buttons -->
+    <div class="row mb-3">
         <div class="col-6">
-            <a href="{% url 'add_income' %}" class="btn btn-income w-100">
-                + Add Income
-            </a>
+            <a href="{% url 'add_withdraw' %}" class="btn btn-warning w-100">+ Add Withdrawal</a>
         </div>
         <div class="col-6">
-            <a href="{% url 'summary' %}" class="btn btn-primary w-100">
-                Back to Summary
-            </a>
+            <a href="{% url 'saving_list' %}" class="btn btn-secondary w-100">Savings</a>
         </div>
     </div>
+
 </div>
 {% endblock %}
