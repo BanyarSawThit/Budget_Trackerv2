@@ -55,7 +55,7 @@
     <div class="row mb-3">
         <div class="col-6">
             <div class="card card-budget shadow">
-                <div class="card-header text-label">Available Budget</div>
+                <div class="card-header text-label">Started Budget</div>
                 <div class="card-body text-center">
                     <h3 class="card-title text-value">{{ available_budget|convert:rate }}</h3>
                 </div>
@@ -109,6 +109,10 @@
                             <td>{{ item.description }}</td>
                             <td>{{ item.get_category_display }}</td>
                             <td>{{ item.amount }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">No Spending yet! Doing Good!</td>
                         </tr>
                         {% endfor %}
                         </tbody>
