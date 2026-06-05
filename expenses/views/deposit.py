@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from expenses.forms import DepositForm
 from expenses.models import Deposit, User
 from expenses.notifications import notify_user
-from expenses.services import get_user_stats
+from expenses.services import get_user_stats, get_deposit
 from expenses.utils import get_int, get_selected_period, get_selected_user
 
 
@@ -48,15 +48,12 @@ def add_deposit(request):
             new_deposit.user = current_user
             new_deposit.save()
 
-            # Get user budget
-            user_stats = get_user_stats(current_user, current_month, current_year)
-
             notify_user(
                 added_by_username=request.user.username,
                 amount=new_deposit.amount,
                 category="Deposit",
                 description=new_deposit.description,
-                deposit=user_stats['net_balance'],
+                deposit=get_deposit(current_month, current_year),
             )
 
             return redirect('add_deposit')
