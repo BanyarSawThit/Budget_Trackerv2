@@ -7,7 +7,7 @@ from expenses.forms import DepositForm
 from expenses.models import Deposit, User
 from expenses.notifications import notify_user
 from expenses.services import get_user_stats, get_deposit
-from expenses.utils import get_int, get_selected_period, get_selected_user
+from expenses.utils import get_selected_period, get_selected_user
 
 
 @login_required
