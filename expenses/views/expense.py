@@ -64,17 +64,11 @@ def add_expense(request):
 
     current_user = request.user
 
-    session_month = request.session.get("selected_month", date.today().month)
-    session_year = request.session.get("selected_year", date.today().year)
+    current_month, current_year = date.today().month, date.today().year
 
     # User total budget before adding expense
-    user_stats = get_user_stats(current_user, session_month, session_year)
-    deposit = get_deposit(session_month, session_year)
-
-    # today spent total
-    today_total = (Expense.objects
-                   .filter(date=date.today())
-                   .aggregate(Sum("amount"))['amount__sum'] or 0)
+    user_stats = get_user_stats(current_user, current_month, current_year)
+    deposit = get_deposit(current_month, current_year)
 
     # today expense list
     today_list = Expense.objects.filter(date=date.today())
@@ -113,9 +107,9 @@ def add_expense(request):
 
     context = {
         'form': form,
-        'today_total': today_total,
         'user_stats': user_stats,
         'today_list': today_list,
+        'deposit_amount': get_deposit(date.today().month, date.today().year),
         'user': current_user,
     }
     return render(request, 'expenses/add_expense.html', context)
